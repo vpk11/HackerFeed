@@ -101,7 +101,7 @@ A release APK is a signed version of your app, ready for distribution (e.g., on 
 
 A brief overview of key directories:
 
-*   `app/src/main/java/com/vpk/HackerFeed/`: Contains the main Kotlin source code.
+*   `app/src/main/java/com/vpk/hackerfeed/`: Contains the main Kotlin source code.
     *   `MainActivity.kt`: The main entry point of the app, displays the list of Hackernews articles.
     *   `AboutActivity.kt`: Displays information about the app and developer.
     *   `HackerNewsApiService.kt`: Service to integrate Hackernews API and fetch top articles.
