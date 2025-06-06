@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,9 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Code
+import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,12 +33,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class AboutActivity : ComponentActivity() {
@@ -64,11 +67,19 @@ class AboutActivity : ComponentActivity() {
                                         )
                                     }
                                 },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.primary, // This will be GithubBlue
-                                    titleContentColor = MaterialTheme.colorScheme.onPrimary, // White
-                                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary // White
-                                )
+                                colors = if (isSystemInDarkTheme()) {
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = GithubDarkGray,
+                                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                                    )
+                                } else {
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
                             )
                         }
                     ) { paddingValues ->
@@ -99,23 +110,23 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.hackerfeed_tagline),
+                text = stringResource(R.string.developed_by),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = stringResource(R.string.app_version_label, getAppVersionName(context)),
+                text = "Version ${getAppVersionName(context)}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
         }
 
-        // Footer with links
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = stringResource(R.string.connect_with_developer),
+                fontSize = 16.sp,
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(bottom = 8.dp),
                 color = MaterialTheme.colorScheme.onBackground
@@ -125,17 +136,17 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SocialLink(
-                    imageVector = Icons.Filled.AccountCircle,
+                    painter = painterResource(id = R.drawable.ic_web),
                     text = stringResource(R.string.portfolio_label),
                     url = stringResource(R.string.developer_portfolio_url)
                 )
                 SocialLink(
-                    imageVector = Icons.Filled.AlternateEmail, // Generic icon
+                    painter = painterResource(id = R.drawable.ic_linkedin),
                     text = stringResource(R.string.email_label),
                     url = "mailto:${stringResource(R.string.developer_email_address)}"
                 )
                 SocialLink(
-                    imageVector = Icons.Filled.Code,
+                    painter = painterResource(id = R.drawable.ic_github),
                     text = stringResource(R.string.github_profile_label),
                     url = stringResource(R.string.developer_github_url)
                 )
@@ -147,7 +158,7 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
 
 @Composable
 fun SocialLink(
-    imageVector: androidx.compose.ui.graphics.vector.ImageVector,
+    painter: Painter,
     text: String,
     url: String,
     modifier: Modifier = Modifier
@@ -162,11 +173,10 @@ fun SocialLink(
             }
             .padding(8.dp)
     ) {
-        Icon(
-            imageVector = imageVector,
+        Image(
+            painter = painter,
             contentDescription = text,
-            modifier = Modifier.size(32.dp),
-            tint = MaterialTheme.colorScheme.primary
+            modifier = Modifier.size(32.dp)
         )
         Text(
             text = text,
