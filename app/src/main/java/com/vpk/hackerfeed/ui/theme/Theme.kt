@@ -1,6 +1,5 @@
-package com.vpk.hackerfeed.ui.theme
+package com.vpk.hackerfeed.ui.theme // Ensure this is your correct package
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,35 +8,91 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val GithubDarkColorScheme = darkColorScheme(
+    primary = GithubBlue,
+    onPrimary = Color.White, // Text on GithubBlue buttons/elements
+    primaryContainer = GithubBlue.copy(alpha = 0.3f), // Can be used for larger highlighted areas
+    onPrimaryContainer = GithubLightGray,
+
+    secondary = GithubPurple, // A secondary accent if needed
+    onSecondary = Color.Black,
+    secondaryContainer = GithubPurple.copy(alpha = 0.2f),
+    onSecondaryContainer = GithubLightGray,
+
+    tertiary = GithubGreen, // A tertiary accent (e.g., for success states)
+    onTertiary = Color.Black,
+    tertiaryContainer = GithubGreen.copy(alpha = 0.2f),
+    onTertiaryContainer = GithubLightGray,
+
+    error = Color(0xFFF85149), // GitHub's red for errors
+    onError = Color.White,
+    errorContainer = Color(0xFFDA3633).copy(alpha = 0.2f),
+    onErrorContainer = GithubLightGray,
+
+    background = GithubDarkCharcoal,
+    onBackground = GithubLightGray, // Main text color
+
+    surface = GithubDarkGray,         // Cards, AppBar background
+    onSurface = GithubLightGray,      // Text on cards/AppBar
+
+    surfaceVariant = GithubMediumGray,  // For elements like highlighted menu items or input field backgrounds
+    onSurfaceVariant = GithubDimGray,   // Text on surface variants
+
+    outline = GithubMediumGray,       // Borders for cards, text fields
+    inverseOnSurface = GithubDarkCharcoal,
+    inverseSurface = GithubLightGray,
+    inversePrimary = GithubBlue.copy(alpha = 0.8f), // Often for pressed states of primary elements
+    surfaceTint = GithubBlue.copy(alpha = 0.1f), // Subtle tint on elevated surfaces
+    outlineVariant = GithubDimGray.copy(alpha = 0.5f),
+    scrim = Color.Black.copy(alpha = 0.6f)
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+private val GithubLightColorScheme = lightColorScheme(
+    primary = GithubBlue,
     onPrimary = Color.White,
+    primaryContainer = GithubBlue.copy(alpha = 0.2f),
+    onPrimaryContainer = GithubDarkText,
+
+    secondary = GithubPurple,
     onSecondary = Color.White,
+    secondaryContainer = GithubPurple.copy(alpha = 0.15f),
+    onSecondaryContainer = GithubDarkText,
+
+    tertiary = GithubGreen,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiaryContainer = GithubGreen.copy(alpha = 0.15f),
+    onTertiaryContainer = GithubDarkText,
+
+    error = Color(0xFFCF222E), // GitHub's red for light theme errors
+    onError = Color.White,
+    errorContainer = Color(0xFFCF222E).copy(alpha = 0.1f),
+    onErrorContainer = GithubDarkText,
+
+    background = GithubOffWhite,
+    onBackground = GithubDarkText,
+
+    surface = GithubLightSurfaceGray, // Cards, AppBar
+    onSurface = GithubDarkText,
+
+    surfaceVariant = GithubOffWhite, // Often same as background or slightly different
+    onSurfaceVariant = GithubSecondaryText,
+
+    outline = GithubLightBorderGray,
+    inverseOnSurface = GithubLightSurfaceGray,
+    inverseSurface = GithubDarkText,
+    inversePrimary = GithubBlue.copy(alpha = 0.9f),
+    surfaceTint = GithubBlue.copy(alpha = 0.05f),
+    outlineVariant = GithubLightBorderGray.copy(alpha = 0.7f),
+    scrim = Color.Black.copy(alpha = 0.32f)
 )
 
 @Composable
 fun HackerFeedTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Set to false to enforce GitHub-like theme
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,14 +100,13 @@ fun HackerFeedTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> GithubDarkColorScheme
+        else -> GithubLightColorScheme
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography, // We'll use the default M3 Typography for now
         content = content
     )
 }

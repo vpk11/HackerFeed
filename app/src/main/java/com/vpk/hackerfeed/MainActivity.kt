@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.GithubDarkGray
+import androidx.compose.material.icons.filled.Info
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels()
@@ -66,18 +70,40 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NewsApp(viewModel: NewsViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkTheme = isSystemInDarkTheme()
+    val localContext = LocalContext.current
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name)) // Use your app name string resource
+                    Text(text = stringResource(id = R.string.app_name))
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary // For action icons
-                )
+                colors = if (isDarkTheme) {
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = GithubDarkGray,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                } else {
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                actions = {
+                    IconButton(onClick = {
+                        // Intent to start AboutActivity
+                        val intent = Intent(localContext, AboutActivity::class.java)
+                        localContext.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = stringResource(R.string.about)
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -140,9 +166,26 @@ fun ArticleList(
 fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
+    // Determine the card background color based on the current theme (dark/light)
+    val cardBackgroundColor = if (isSystemInDarkTheme()) {
+        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundDark
+    } else {
+        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundLight
+    }
+
+    val cardContentColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
     Card(
         modifier = modifier.padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = cardBackgroundColor,
+            contentColor = cardContentColor
+        )
     ) {
         Box(
             modifier = Modifier
@@ -182,13 +225,13 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
                                 val intent = Intent(Intent.ACTION_VIEW, article.url.toUri())
                                 context.startActivity(intent)
                             },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                             )
+
+                        ) {
                             Text(stringResource(R.string.read_full_article))
                         }
                     }
@@ -246,7 +289,7 @@ fun ArticleCardInListPreview() {
         url = "https://dev.to/kotlin/coroutines"
     )
     HackerFeedTheme {
-        Box(modifier = Modifier.padding(16.dp)) { // Simulate padding it would have in a list
+        Box(modifier = Modifier.padding(16.dp)) {
             ArticleCard(
                 article = previewArticle,
                 modifier = Modifier.fillMaxWidth()
