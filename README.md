@@ -27,7 +27,7 @@ Hackernews at your finger tips\
 
 *   **Language:** [Kotlin](https://kotlinlang.org/) (100%)
 *   **UI Toolkit:** [Jetpack Compose](https://developer.android.com/jetpack/compose) - Android's modern toolkit for building native UI.
-*   **Architecture:** (Assumed MVVM-like with state hoisted to Composable functions, or simple Activity-driven UI if no explicit ViewModel is used for core quote display logic)
+*   **Architecture:** MVVM (Model-View-ViewModel) utilizing Jetpack ViewModel and StateFlow to manage UI state for Composable functions.
 *   **Core Jetpack Libraries:**
     *   `androidx.activity:activity-compose` - For Compose integration in Activities.
     *   `androidx.compose.material3:material3` - Material Design 3 components.
