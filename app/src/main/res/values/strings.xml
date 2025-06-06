@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HackerFeed</string>
+    <string name="read_full_article">Read Full Article</string>
+    <string name="unknown">Unknown</string>
+    <string name="no_title">No Title</string>
+    <string name="this_is_a_sample_hacker_news_article_title_for_preview">This Is a Sample Hacker News Article Title for Preview</string>
+    <string name="author">author</string>
+    <string name="https_google_com">https://google.com</string>
+    <string name="points">%1$s points</string>
+    <string name="no_articles_available">No articles available.</string>
+</resources>
