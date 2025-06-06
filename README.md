@@ -36,7 +36,7 @@ Hackernews at your finger tips\
     *   `androidx.lifecycle:lifecycle-runtime-compose` - For observing Lifecycle-aware state.
 *   **Serialization:**
     *   `org.jetbrains.kotlinx:kotlinx-serialization-json` - For parsing json response from Hackernews api.
-*   **Navigation:** (Assumed basic Intent-based navigation between Activities, or Jetpack Navigation Compose if implemented)
+*   **Navigation:** Intent-based navigation between Activities
 *   **Build Tool:** Gradle
 
 ## Setup Instructions
