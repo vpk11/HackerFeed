@@ -54,6 +54,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.tooling.preview)
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     debugImplementation(libs.androidx.ui.tooling)
 
     // Networking with Retrofit

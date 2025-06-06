@@ -8,4 +8,16 @@
     <string name="https_google_com">https://google.com</string>
     <string name="points">%1$s points</string>
     <string name="no_articles_available">No articles available.</string>
+    <string name="hackerfeed_tagline">Hacker News at fingertips</string>
+    <string name="app_version_label">App version</string>
+    <string name="connect_with_developer">Connect with developer:</string>
+    <string name="portfolio_label">Portfolio</string>
+    <string name="developer_portfolio_url">https://vpk11.github.io</string>
+    <string name="email_label">Email</string>
+    <string name="developer_email_address">vishnuprasad.kamalon@gmail.com</string>
+    <string name="github_profile_label">Github</string>
+    <string name="developer_github_url">https://github.com/vpk11</string>
+    <string name="about_hackerfeed_title" />
+    <string name="navigate_back_content_desc">Back</string>
+    <string name="about">About</string>
 </resources>
