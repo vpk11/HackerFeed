@@ -159,7 +159,7 @@ fun ArticleList(
             key = { storyId -> storyId }
         ) { articleId ->
             LaunchedEffect(articleId, articles[articleId] == null) {
-                if (articles[articleId] == null && !articles.containsKey(articleId) || articles[articleId] == null && articles.containsKey(articleId) ) {
+                if (articles[articleId] == null) {
                     onFetchArticle(articleId)
                 }
             }
