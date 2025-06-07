@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 data class NewsUiState(
     val isLoading: Boolean = true,
     val storyIds: List<Long> = emptyList(),
-    val articles: Map<Long, Article?> = emptyMap(),
+    val articles: Map<Long, Article> = emptyMap(),
     val error: String? = null
 )
 
@@ -64,13 +64,6 @@ class NewsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                if (_isRefreshing.value && !_uiState.value.articles.containsKey(id)) {
-                    _uiState.update { currentState ->
-                        val updatedArticles = currentState.articles.toMutableMap()
-                        updatedArticles[id] = null
-                        currentState.copy(articles = updatedArticles)
-                    }
-                }
                 val article = RetrofitInstance.api.getArticleDetails(id)
                 _uiState.update { currentState ->
                     val updatedArticles = currentState.articles.toMutableMap()
