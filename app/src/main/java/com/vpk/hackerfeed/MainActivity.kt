@@ -15,10 +15,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,12 +27,14 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,9 +47,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
-import androidx.compose.material.icons.filled.Info
+import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels()
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NewsApp(viewModel: NewsViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val isDarkTheme = isSystemInDarkTheme()
     val localContext = LocalContext.current
 
@@ -94,7 +97,6 @@ fun NewsApp(viewModel: NewsViewModel) {
                 },
                 actions = {
                     IconButton(onClick = {
-                        // Intent to start AboutActivity
                         val intent = Intent(localContext, AboutActivity::class.java)
                         localContext.startActivity(intent)
                     }) {
@@ -107,24 +109,36 @@ fun NewsApp(viewModel: NewsViewModel) {
             )
         }
     ) { innerPadding ->
-        Box(
+        PullToRefreshBox(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
+                .padding(innerPadding)
+                .fillMaxSize(),
+            isRefreshing = isRefreshing,
+            onRefresh = { viewModel.refreshTopStories() }
         ) {
-            if (uiState.isLoading && uiState.storyIds.isEmpty()) {
-                CircularProgressIndicator()
-            } else if (uiState.error != null) {
-                Text(text = uiState.error!!)
-            } else if (uiState.storyIds.isNotEmpty()) {
-                ArticleList(
-                    storyIds = uiState.storyIds,
-                    articles = uiState.articles,
-                    onFetchArticle = { id -> viewModel.fetchArticleDetails(id) }
-                )
-            } else {
-                Text(text = stringResource(R.string.no_articles_available))
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (uiState.isLoading && uiState.storyIds.isEmpty() && !isRefreshing) {
+                    CircularProgressIndicator()
+                } else if (uiState.error != null && !isRefreshing) {
+                    Text(
+                        text = uiState.error!!,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else if (uiState.storyIds.isNotEmpty()) {
+                    ArticleList(
+                        storyIds = uiState.storyIds,
+                        articles = uiState.articles,
+                        onFetchArticle = { id -> viewModel.fetchArticleDetails(id) }
+                    )
+                } else if (!uiState.isLoading && !isRefreshing) {
+                    Text(
+                        text = stringResource(R.string.no_articles_available),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }
@@ -133,18 +147,18 @@ fun NewsApp(viewModel: NewsViewModel) {
 @Composable
 fun ArticleList(
     storyIds: List<Long>,
-    articles: Map<Long, Article>,
+    articles: Map<Long, Article?>,
     onFetchArticle: (Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(
             items = storyIds,
             key = { storyId -> storyId }
         ) { articleId ->
-            LaunchedEffect(articleId) {
+            LaunchedEffect(articleId, articles[articleId] == null) {
                 if (articles[articleId] == null) {
                     onFetchArticle(articleId)
                 }
@@ -156,7 +170,7 @@ fun ArticleList(
                 article = article,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 4.dp)
             )
         }
     }
@@ -172,15 +186,10 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
     } else {
         com.vpk.hackerfeed.ui.theme.GithubCardBackgroundLight
     }
-
-    val cardContentColor = if (isSystemInDarkTheme()) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
+    val cardContentColor = MaterialTheme.colorScheme.onSurface
 
     Card(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = cardBackgroundColor,
@@ -194,28 +203,28 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
             contentAlignment = Alignment.Center
         ) {
             if (article == null) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(modifier = Modifier.size(32.dp))
             } else {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Column {
                         Text(
                             text = article.title ?: stringResource(R.string.no_title),
-                            style = MaterialTheme.typography.headlineSmall,
-                            maxLines = 3,
+                            style = MaterialTheme.typography.titleLarge,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "by ${article.author ?: stringResource(R.string.unknown)}",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = stringResource(R.string.points, article.score ?: 0),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
@@ -229,8 +238,8 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-
+                            ),
+                            contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             Text(stringResource(R.string.read_full_article))
                         }
@@ -250,7 +259,7 @@ fun NewsAppScrollablePreview() {
             storyIds = listOf(1, 2, 3),
             articles = mapOf<Long, Article>(
                 1L to Article(1, "Author One", 100, 0, "First Long Article Title That Might Wrap Around Nicely", "http://example.com/1"),
-                2L to Article(2, "Author Two", 120, 0, "Second Article Also Interesting", "http://example.com/2"),
+                2L to Article(2, "Author Two", 120, 0, "Second Article Also Interesting", "http://example.com/2")
             ),
             isLoading = false
         )
