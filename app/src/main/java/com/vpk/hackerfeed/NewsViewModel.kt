@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 data class NewsUiState(
     val isLoading: Boolean = true,
     val storyIds: List<Long> = emptyList(),
-    val articles: Map<Long, Article> = emptyMap(),
+    val articles: Map<Long, Article?> = emptyMap(),
     val error: String? = null
 )
 
@@ -71,7 +71,14 @@ class NewsViewModel : ViewModel() {
                     currentState.copy(articles = updatedArticles)
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = "Failed to load article $id: ${e.message}") }
+                _uiState.update { currentState ->
+                    val updatedArticles = currentState.articles.toMutableMap()
+                    updatedArticles[id] = null // Explicitly mark as failed/not loaded for this ID
+                    currentState.copy(
+                        articles = updatedArticles,
+                        error = "Failed to load article $id: ${e.message}"
+                    )
+                }
             }
         }
     }
