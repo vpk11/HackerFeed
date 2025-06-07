@@ -60,7 +60,7 @@ class NewsViewModel : ViewModel() {
     }
 
     fun fetchArticleDetails(id: Long) {
-        if (_uiState.value.articles.containsKey(id) && _uiState.value.articles[id] != null && !_isRefreshing.value) return
+        if (_uiState.value.articles[id] != null && !_isRefreshing.value) return
 
         viewModelScope.launch {
             try {
