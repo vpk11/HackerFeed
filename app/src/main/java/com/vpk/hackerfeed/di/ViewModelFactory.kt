@@ -22,13 +22,15 @@ class ViewModelFactory(
                     getArticleDetailsUseCase = container.getArticleDetailsUseCase,
                     getFavouriteArticlesUseCase = container.getFavouriteArticlesUseCase,
                     toggleFavouriteUseCase = container.toggleFavouriteUseCase,
-                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase
+                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase,
+                    stringResourceProvider = container.stringResourceProvider
                 ) as T
             }
             FavouritesViewModel::class.java -> {
                 FavouritesViewModel(
                     getFavouriteArticlesUseCase = container.getFavouriteArticlesUseCase,
-                    removeFromFavouritesUseCase = container.removeFromFavouritesUseCase
+                    removeFromFavouritesUseCase = container.removeFromFavouritesUseCase,
+                    stringResourceProvider = container.stringResourceProvider
                 ) as T
             }
             CacheViewModel::class.java -> {

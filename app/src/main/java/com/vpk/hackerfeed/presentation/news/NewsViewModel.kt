@@ -2,6 +2,8 @@ package com.vpk.hackerfeed.presentation.news
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpk.hackerfeed.R
+import com.vpk.hackerfeed.data.provider.StringResourceProvider
 import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.domain.usecase.GetArticleDetailsUseCase
 import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
@@ -27,7 +29,8 @@ class NewsViewModel(
     private val getArticleDetailsUseCase: GetArticleDetailsUseCase,
     private val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
-    private val clearExpiredCacheUseCase: ClearExpiredCacheUseCase
+    private val clearExpiredCacheUseCase: ClearExpiredCacheUseCase,
+    private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NewsUiState())
@@ -88,7 +91,7 @@ class NewsViewModel(
                     _uiState.update { 
                         it.copy(
                             isLoading = false, 
-                            error = "Failed to load stories: ${exception.message}"
+                            error = stringResourceProvider.getString(R.string.failed_to_load_stories, exception.message ?: "")
                         ) 
                     }
                 }
@@ -128,7 +131,7 @@ class NewsViewModel(
                         updatedArticles[id] = null // Mark as failed/not loaded
                         currentState.copy(
                             articles = updatedArticles,
-                            error = "Failed to load article $id: ${exception.message}"
+                            error = stringResourceProvider.getString(R.string.failed_to_load_article, id, exception.message ?: "")
                         )
                     }
                 }
@@ -144,7 +147,7 @@ class NewsViewModel(
                 },
                 onFailure = { exception ->
                     _uiState.update { 
-                        it.copy(error = "Failed to toggle favourite: ${exception.message}") 
+                        it.copy(error = stringResourceProvider.getString(R.string.failed_to_toggle_favourite, exception.message ?: "")) 
                     }
                 }
             )

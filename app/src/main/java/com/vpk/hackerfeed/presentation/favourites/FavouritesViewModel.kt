@@ -2,6 +2,8 @@ package com.vpk.hackerfeed.presentation.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpk.hackerfeed.R
+import com.vpk.hackerfeed.data.provider.StringResourceProvider
 import com.vpk.hackerfeed.domain.model.FavouriteArticle
 import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.RemoveFromFavouritesUseCase
@@ -18,7 +20,8 @@ data class FavouritesUiState(
 
 class FavouritesViewModel(
     private val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase,
-    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase
+    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase,
+    private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavouritesUiState())
@@ -41,7 +44,7 @@ class FavouritesViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load favourites: ${e.message}"
+                    error = stringResourceProvider.getString(R.string.failed_to_load_favourites, e.message ?: "")
                 )
             }
         }
@@ -55,7 +58,7 @@ class FavouritesViewModel(
                 },
                 onFailure = { exception ->
                     _uiState.value = _uiState.value.copy(
-                        error = "Failed to remove favourite: ${exception.message}"
+                        error = stringResourceProvider.getString(R.string.failed_to_remove_favourite, exception.message ?: "")
                     )
                 }
             )
