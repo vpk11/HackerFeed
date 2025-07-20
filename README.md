@@ -2,7 +2,7 @@
 
 Hackernews at your finger tips\
 \
-[Click here](https://github.com/vpk11/Hackerfeed/releases/tag/1.0.1) to install latest release
+[Click here](https://github.com/vpk11/Hackerfeed/releases/tag/1.1.0) to install latest release
 
 ## Table of Contents
 
@@ -100,19 +100,35 @@ A release APK is a signed version of your app, ready for distribution (e.g., on 
 
 ## Project Structure
 
-A brief overview of key directories:
+The project follows **Clean Architecture** principles with clear separation of concerns across three main layers:
 
-*   `app/src/main/java/com/vpk/hackerfeed/`: Contains the main Kotlin source code.
-    *   `NewsActivity.kt`: The main entry point of the app, displays the list of Hackernews articles.
-    *   `AboutActivity.kt`: Displays information about the app and developer.
-    *   `HackerNewsApiService.kt`: Service to integrate Hackernews API and fetch top articles.
-    *   `NewsViewModel.kt`: Data class and ViewModel
-    *   `ui/theme/`: Contains Jetpack Compose theme files (`Color.kt`, `Theme.kt`, `Type.kt`).
-*   `app/src/main/res/`: Contains application resources.
-    *   `drawable/`: For image assets (icons, etc.).
-    *   `mipmap/`: For launcher icons.
-    *   `values/`: For XML resources like strings (`strings.xml`), colors (`colors.xml`), themes (`themes.xml`).
-*   `app/build.gradle` (or `app/build.gradle.kts`): Module-level Gradle build script.
-*   `build.gradle` (or `build.gradle.kts`): Project-level Gradle build script.
-*   `app/src/androidTest/`: For Android Instrumented tests.
-*   `app/src/test/`: For local unit tests.
+### Presentation Layer
+*   **Activities**: Main UI screens including news feed, favourites, settings, and about pages
+*   **ViewModels**: `presentation/` - State management and business logic coordination
+*   **UI Components**: `components/` - Reusable Compose components for consistent UI
+
+### Domain Layer
+*   **Models**: `domain/model/` - Core business entities and data models
+*   **Use Cases**: `domain/usecase/` - Single-responsibility business operations
+*   **Repository Interfaces**: `domain/repository/` - Data access contracts
+
+### Data Layer
+*   **API Service**: `data/` - Retrofit service for Hacker News API integration
+*   **Data Sources**: `data/datasource/` - Remote API and local database data sources
+*   **Repository Implementations**: `data/repository/` - Concrete data access with caching
+*   **Cache Management**: `data/cache/` - Intelligent caching with automatic expiration
+*   **Database**: `database/` - Room database for offline storage and favourites
+
+### Supporting Infrastructure
+*   **Dependency Injection**: `di/` - Manual DI container and ViewModel factory
+*   **UI Theming**: `ui/theme/` - Material Design 3 theme system
+*   **Resources**: `app/src/main/res/` - App resources (drawables, strings, etc.)
+
+### Key Architecture Features
+- **MVVM Pattern**: Clear separation between UI and business logic
+- **Clean Architecture**: Domain-driven design with dependency inversion
+- **Repository Pattern**: Abstracted data access with local caching
+- **Use Case Pattern**: Single-responsibility business operations
+- **Manual Dependency Injection**: Lightweight DI without external frameworks
+- **Offline-First**: Local caching with automatic expiration
+- **Material Design 3**: Modern UI following Google's design guidelines
