@@ -113,10 +113,11 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+            val error = uiState.error
             if (uiState.isLoading) {
                 LoadingStateComponent()
-            } else if (uiState.error != null) {
-                ErrorStateComponent(errorMessage = uiState.error!!)
+            } else if (error != null) {
+                ErrorStateComponent(errorMessage = error)
             } else if (uiState.favouriteArticles.isEmpty()) {
                 EmptyStateComponent(
                     icon = Icons.Filled.Favorite,
