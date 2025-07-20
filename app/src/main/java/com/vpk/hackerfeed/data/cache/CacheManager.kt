@@ -78,14 +78,7 @@ class CacheManager(
         val cachedArticle = cachedArticleDao.getCachedArticle(id)
         return if (cachedArticle != null && 
                   CacheConfig.isArticleCacheValid(cachedArticle.cachedAt)) {
-            Article(
-                id = cachedArticle.id,
-                author = cachedArticle.author,
-                score = cachedArticle.score,
-                time = cachedArticle.time,
-                title = cachedArticle.title,
-                url = cachedArticle.url
-            )
+            cachedArticle.toDomainModel()
         } else {
             null
         }
@@ -96,19 +89,11 @@ class CacheManager(
      */
     suspend fun getCachedArticles(ids: List<Long>): Map<Long, Article> {
         val cachedArticles = cachedArticleDao.getCachedArticles(ids)
-        val currentTime = System.currentTimeMillis()
         
         return cachedArticles
             .filter { CacheConfig.isArticleCacheValid(it.cachedAt) }
             .associate { cachedArticle ->
-                cachedArticle.id to Article(
-                    id = cachedArticle.id,
-                    author = cachedArticle.author,
-                    score = cachedArticle.score,
-                    time = cachedArticle.time,
-                    title = cachedArticle.title,
-                    url = cachedArticle.url
-                )
+                cachedArticle.id to cachedArticle.toDomainModel()
             }
     }
     
@@ -200,3 +185,13 @@ class CacheManager(
         }
     }
 }
+
+// Extension function for mapping between database entity and domain model
+private fun CachedArticle.toDomainModel(): Article = Article(
+    id = this.id,
+    author = this.author,
+    score = this.score,
+    time = this.time,
+    title = this.title,
+    url = this.url
+)

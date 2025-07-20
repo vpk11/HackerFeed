@@ -92,13 +92,6 @@ class CacheViewModel(
     }
 
     /**
-     * Clears the current message/error state.
-     */
-    fun clearMessage() {
-        _uiState.update { it.copy(message = null, error = null) }
-    }
-    
-    /**
      * Clears only the message state.
      */
     fun clearMessageOnly() {

@@ -11,10 +11,6 @@ class ToggleFavouriteUseCase(
     private val favouritesRepository: FavouritesRepository
 ) {
     suspend operator fun invoke(article: Article): Result<Unit> {
-        return try {
-            favouritesRepository.toggleFavourite(article)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return favouritesRepository.toggleFavourite(article)
     }
 }

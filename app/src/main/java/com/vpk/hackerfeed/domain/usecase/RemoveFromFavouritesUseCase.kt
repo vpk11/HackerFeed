@@ -10,10 +10,6 @@ class RemoveFromFavouritesUseCase(
     private val favouritesRepository: FavouritesRepository
 ) {
     suspend operator fun invoke(articleId: Long): Result<Unit> {
-        return try {
-            favouritesRepository.removeFromFavourites(articleId)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return favouritesRepository.removeFromFavourites(articleId)
     }
 }

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -73,14 +73,11 @@ fun CacheManagementScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     
     // Show snackbar for messages and errors
-    LaunchedEffect(uiState.message) {
+    LaunchedEffect(uiState.message, uiState.error) {
         uiState.message?.let { message ->
             snackbarHostState.showSnackbar(message)
             viewModel.clearMessageOnly()
         }
-    }
-    
-    LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
             viewModel.clearErrorOnly()
@@ -94,7 +91,7 @@ fun CacheManagementScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.navigate_back_content_desc)
                         )
                     }
