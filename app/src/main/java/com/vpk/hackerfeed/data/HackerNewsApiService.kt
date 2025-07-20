@@ -1,4 +1,4 @@
-package com.vpk.hackerfeed
+package com.vpk.hackerfeed.data
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Retrofit

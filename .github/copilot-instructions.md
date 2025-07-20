@@ -36,6 +36,38 @@ This document outlines key considerations when using Copilot for this Jetpack Co
 * **Separation of Concerns:** Keep UI logic within composables and business logic in ViewModels or domain layers.
 * **Immutability:** Prefer immutable data classes for UI state to ensure correctness and optimize recomposition.
 
+## Project Architecture
+
+This project follows **Google's recommended Android app architecture** with clean, layered separation:
+
+### **Presentation Layer** (`/presentation/`)
+- **ViewModels**: Hold UI state and handle user interactions
+- **Activities/Composables**: Display data and collect user events
+- **Dependencies**: Use cases from domain layer only
+
+### **Domain Layer** (`/domain/`)
+- **Models**: Pure business objects (Article, FavouriteArticle)
+- **Repository Interfaces**: Define data contracts without implementation details
+- **Use Cases**: Encapsulate specific business logic operations
+- **Dependencies**: No Android framework dependencies (pure Kotlin)
+
+### **Data Layer** (`/data/`)
+- **Repository Implementations**: Coordinate between data sources
+- **Data Sources**: Abstract local (Room) and remote (Retrofit) operations
+- **Data Models**: Framework-specific entities and API responses
+- **Dependencies**: Android framework and network libraries
+
+### **Dependency Injection** (`/di/`)
+- **AppContainer**: Manual DI providing use cases to ViewModels
+- **Flow**: Repositories → Use Cases → ViewModels → UI
+- **Principle**: High-level modules depend on abstractions, not concretions
+
+### **Key Patterns**
+- **Repository Pattern**: Single source of truth for each data type
+- **Use Case Pattern**: Reusable business logic across ViewModels  
+- **Unidirectional Data Flow**: Data flows down, events flow up
+- **Result Wrapper**: Handle success/error states consistently
+
 ### Build System (Gradle)
 
 * **Dependencies:** Suggest up-to-date and stable versions of libraries.

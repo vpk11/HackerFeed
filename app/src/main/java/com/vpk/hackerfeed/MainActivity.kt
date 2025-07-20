@@ -52,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.di.ViewModelFactory
+import com.vpk.hackerfeed.domain.model.Article
+import com.vpk.hackerfeed.presentation.news.NewsViewModel
+import com.vpk.hackerfeed.presentation.news.NewsUiState
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor

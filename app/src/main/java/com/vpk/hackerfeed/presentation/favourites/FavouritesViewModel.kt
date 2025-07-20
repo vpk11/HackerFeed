@@ -1,9 +1,10 @@
-package com.vpk.hackerfeed
+package com.vpk.hackerfeed.presentation.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vpk.hackerfeed.database.FavouriteArticle
-import com.vpk.hackerfeed.repository.FavouritesRepository
+import com.vpk.hackerfeed.domain.model.FavouriteArticle
+import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
+import com.vpk.hackerfeed.domain.usecase.RemoveFromFavouritesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ data class FavouritesUiState(
 )
 
 class FavouritesViewModel(
-    private val favouritesRepository: FavouritesRepository
+    private val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase,
+    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavouritesUiState())
@@ -29,7 +31,7 @@ class FavouritesViewModel(
     private fun loadFavourites() {
         viewModelScope.launch {
             try {
-                favouritesRepository.getAllFavourites().collect { favourites ->
+                getFavouriteArticlesUseCase().collect { favourites ->
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         favouriteArticles = favourites,
@@ -47,7 +49,16 @@ class FavouritesViewModel(
 
     fun removeFromFavourites(articleId: Long) {
         viewModelScope.launch {
-            favouritesRepository.removeFromFavourites(articleId)
+            removeFromFavouritesUseCase(articleId).fold(
+                onSuccess = {
+                    // Success - the UI state will be updated through the Flow
+                },
+                onFailure = { exception ->
+                    _uiState.value = _uiState.value.copy(
+                        error = "Failed to remove favourite: ${exception.message}"
+                    )
+                }
+            )
         }
     }
 }
