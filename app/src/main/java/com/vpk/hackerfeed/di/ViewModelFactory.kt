@@ -16,7 +16,10 @@ class ViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
             NewsViewModel::class.java -> {
-                NewsViewModel(container.favouritesRepository) as T
+                NewsViewModel(
+                    container.newsRepository,
+                    container.favouritesRepository
+                ) as T
             }
             FavouritesViewModel::class.java -> {
                 FavouritesViewModel(container.favouritesRepository) as T

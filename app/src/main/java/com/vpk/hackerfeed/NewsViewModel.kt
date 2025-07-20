@@ -3,6 +3,7 @@ package com.vpk.hackerfeed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vpk.hackerfeed.repository.FavouritesRepository
+import com.vpk.hackerfeed.repository.NewsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,7 @@ data class NewsUiState(
 )
 
 class NewsViewModel(
+    private val newsRepository: NewsRepository,
     private val favouritesRepository: FavouritesRepository
 ) : ViewModel() {
 
@@ -47,7 +49,7 @@ class NewsViewModel(
                 _uiState.update { it.copy(isLoading = true, error = null) }
             }
             try {
-                val ids = RetrofitInstance.api.getTopStoryIds()
+                val ids = newsRepository.getTopStoryIds()
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -77,7 +79,7 @@ class NewsViewModel(
 
         viewModelScope.launch {
             try {
-                val article = RetrofitInstance.api.getArticleDetails(id)
+                val article = newsRepository.getArticleDetails(id)
                 _uiState.update { currentState ->
                     val updatedArticles = currentState.articles.toMutableMap()
                     updatedArticles[id] = article
