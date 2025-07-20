@@ -25,8 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,10 +35,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpk.hackerfeed.components.ThemedTopAppBar
+import com.vpk.hackerfeed.components.LoadingStateComponent
 import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.presentation.cache.CacheViewModel
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 
 class CacheManagementActivity : ComponentActivity() {
     
@@ -86,7 +85,7 @@ fun CacheManagementScreen(
     
     Scaffold(
         topBar = {
-            TopAppBar(
+            ThemedTopAppBar(
                 title = { Text(stringResource(R.string.cache_management)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -95,12 +94,7 @@ fun CacheManagementScreen(
                             contentDescription = stringResource(R.string.navigate_back_content_desc)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -130,11 +124,7 @@ fun CacheManagementScreen(
             Spacer(modifier = Modifier.height(16.dp))
             
             if (uiState.isLoading) {
-                CircularProgressIndicator()
-                Text(
-                    text = stringResource(R.string.processing),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                LoadingStateComponent(message = stringResource(R.string.processing))
             } else {
                 OutlinedButton(
                     onClick = { viewModel.clearExpiredCache() },

@@ -50,4 +50,11 @@
     <!-- Favourites error messages -->
     <string name="failed_to_load_favourites">Failed to load favourites: %1$s</string>
     <string name="failed_to_remove_favourite">Failed to remove favourite: %1$s</string>
+    
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_content_desc">Settings</string>
+    <string name="app_settings_section">App Settings</string>
+    <string name="general_section">General</string>
+    <string name="about_app_description">App information and developer details</string>
 </resources>

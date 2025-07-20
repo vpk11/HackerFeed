@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,8 +34,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -51,12 +48,17 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.database.FavouriteArticle
 import com.vpk.hackerfeed.di.ViewModelFactory
+import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.domain.model.FavouriteArticle as DomainFavouriteArticle
 import com.vpk.hackerfeed.presentation.favourites.FavouritesViewModel
-import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
+import com.vpk.hackerfeed.components.ThemedTopAppBar
+import com.vpk.hackerfeed.components.LoadingStateComponent
+import com.vpk.hackerfeed.components.EmptyStateComponent
+import com.vpk.hackerfeed.components.ErrorStateComponent
+import com.vpk.hackerfeed.components.ArticleCard
 
 class FavouritesActivity : ComponentActivity() {
     private val viewModel: FavouritesViewModel by viewModels {
@@ -82,12 +84,11 @@ class FavouritesActivity : ComponentActivity() {
 @Composable
 fun FavouritesScreen(viewModel: FavouritesViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isDarkTheme = isSystemInDarkTheme()
     val localContext = LocalContext.current
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            ThemedTopAppBar(
                 title = {
                     Text(text = stringResource(R.string.favourites_title))
                 },
@@ -102,21 +103,6 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
                             contentDescription = stringResource(R.string.navigate_back_content_desc)
                         )
                     }
-                },
-                colors = if (isDarkTheme) {
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = GithubDarkGray,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                        actionIconContentColor = MaterialTheme.colorScheme.onSurface,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                    )
-                } else {
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
                 }
             )
         }
@@ -128,38 +114,15 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
             contentAlignment = Alignment.Center
         ) {
             if (uiState.isLoading) {
-                CircularProgressIndicator()
+                LoadingStateComponent()
             } else if (uiState.error != null) {
-                Text(
-                    text = uiState.error ?: "",
-                    modifier = Modifier.padding(16.dp)
-                )
+                ErrorStateComponent(errorMessage = uiState.error!!)
             } else if (uiState.favouriteArticles.isEmpty()) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Favorite,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = stringResource(R.string.no_favourites),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.no_favourites_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                EmptyStateComponent(
+                    icon = Icons.Filled.Favorite,
+                    title = stringResource(R.string.no_favourites),
+                    description = stringResource(R.string.no_favourites_description)
+                )
             } else {
                 FavouritesList(
                     favourites = uiState.favouriteArticles,
@@ -183,94 +146,25 @@ fun FavouritesList(
             items = favourites,
             key = { favourite -> favourite.id }
         ) { favourite ->
-            FavouriteArticleCard(
-                article = favourite,
-                onRemoveFavourite = { onRemoveFavourite(favourite.id) },
+            // Convert FavouriteArticle to Article for reusable component
+            val article = Article(
+                id = favourite.id,
+                author = favourite.author,
+                score = favourite.score,
+                time = favourite.time,
+                title = favourite.title,
+                url = favourite.url
+            )
+            
+            ArticleCard(
+                article = article,
+                isFavourite = true, // Always true in favourites screen
+                onToggleFavourite = { onRemoveFavourite(favourite.id) },
+                showFavoriteButton = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             )
-        }
-    }
-}
-
-@Composable
-fun FavouriteArticleCard(
-    article: DomainFavouriteArticle,
-    onRemoveFavourite: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-
-    // Get the card background color using the reusable helper function
-    val cardBackgroundColor = getCardBackgroundColor()
-    val cardContentColor = MaterialTheme.colorScheme.onSurface
-
-    Card(
-        modifier = modifier.padding(horizontal = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = cardBackgroundColor,
-            contentColor = cardContentColor
-        )
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = article.title ?: stringResource(R.string.no_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "by ${article.author ?: stringResource(R.string.unknown)}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.points, article.score ?: 0),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-                    }
-                    AnimatedFavoriteButton(
-                        isFavourite = true, // Always true in favourites screen
-                        onClick = onRemoveFavourite,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                if (article.url != null) {
-                    Button(
-                        onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, article.url.toUri())
-                            context.startActivity(intent)
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        ),
-                        contentPadding = PaddingValues(vertical = 8.dp)
-                    ) {
-                        Text(stringResource(R.string.read_full_article))
-                    }
-                }
-            }
         }
     }
 }

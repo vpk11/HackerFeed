@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,8 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,10 +54,14 @@ import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.presentation.news.NewsViewModel
 import com.vpk.hackerfeed.presentation.news.NewsUiState
-import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
+import com.vpk.hackerfeed.components.ThemedTopAppBar
+import com.vpk.hackerfeed.components.ArticleListComponent
+import com.vpk.hackerfeed.components.LoadingStateComponent
+import com.vpk.hackerfeed.components.ErrorStateComponent
+import com.vpk.hackerfeed.components.ArticleCard
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels {
@@ -86,27 +88,13 @@ class MainActivity : ComponentActivity() {
 fun NewsApp(viewModel: NewsViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
-    val isDarkTheme = isSystemInDarkTheme()
     val localContext = LocalContext.current
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            ThemedTopAppBar(
                 title = {
                     Text(text = stringResource(id = R.string.app_name))
-                },
-                colors = if (isDarkTheme) {
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = GithubDarkGray,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                    )
-                } else {
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
                 },
                 actions = {
                     IconButton(onClick = {
@@ -119,21 +107,12 @@ fun NewsApp(viewModel: NewsViewModel) {
                         )
                     }
                     IconButton(onClick = {
-                        val intent = Intent(localContext, CacheManagementActivity::class.java)
+                        val intent = Intent(localContext, SettingsActivity::class.java)
                         localContext.startActivity(intent)
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.Storage,
-                            contentDescription = stringResource(R.string.cache_management_content_desc)
-                        )
-                    }
-                    IconButton(onClick = {
-                        val intent = Intent(localContext, AboutActivity::class.java)
-                        localContext.startActivity(intent)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = stringResource(R.string.about)
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(R.string.settings_content_desc)
                         )
                     }
                 }
@@ -152,14 +131,11 @@ fun NewsApp(viewModel: NewsViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 if (uiState.isLoading && uiState.storyIds.isEmpty() && !isRefreshing) {
-                    CircularProgressIndicator()
+                    LoadingStateComponent()
                 } else if (uiState.error != null && !isRefreshing) {
-                    Text(
-                        text = uiState.error!!,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    ErrorStateComponent(errorMessage = uiState.error!!)
                 } else if (uiState.storyIds.isNotEmpty()) {
-                    ArticleList(
+                    ArticleListComponent(
                         storyIds = uiState.storyIds,
                         articles = uiState.articles,
                         favouriteArticleIds = uiState.favouriteArticleIds,
@@ -167,134 +143,7 @@ fun NewsApp(viewModel: NewsViewModel) {
                         onToggleFavourite = { article -> viewModel.toggleFavourite(article) }
                     )
                 } else if (!uiState.isLoading && !isRefreshing) {
-                    Text(
-                        text = stringResource(R.string.no_articles_available),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ArticleList(
-    storyIds: List<Long>,
-    articles: Map<Long, Article?>,
-    favouriteArticleIds: Set<Long>,
-    onFetchArticle: (Long) -> Unit,
-    onToggleFavourite: (Article) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 8.dp)
-    ) {
-        items(
-            items = storyIds,
-            key = { storyId -> storyId }
-        ) { articleId ->
-            LaunchedEffect(articleId, articles[articleId] == null) {
-                if (articles[articleId] == null) {
-                    onFetchArticle(articleId)
-                }
-            }
-
-            val article = articles[articleId]
-
-            ArticleCard(
-                article = article,
-                isFavourite = favouriteArticleIds.contains(articleId),
-                onToggleFavourite = { 
-                    article?.let { onToggleFavourite(it) }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun ArticleCard(
-    article: Article?, 
-    isFavourite: Boolean = false,
-    onToggleFavourite: () -> Unit = {},
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-
-    // Get the card background color using the reusable helper function
-    val cardBackgroundColor = getCardBackgroundColor()
-    val cardContentColor = MaterialTheme.colorScheme.onSurface
-
-    Card(
-        modifier = modifier.padding(horizontal = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = cardBackgroundColor,
-            contentColor = cardContentColor
-        )
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (article == null) {
-                CircularProgressIndicator(modifier = Modifier.size(32.dp))
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = article.title ?: stringResource(R.string.no_title),
-                                style = MaterialTheme.typography.titleLarge,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "by ${article.author ?: stringResource(R.string.unknown)}",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = stringResource(R.string.points, article.score ?: 0),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                        }
-                        AnimatedFavoriteButton(
-                            isFavourite = isFavourite,
-                            onClick = onToggleFavourite,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                    if (article.url != null) {
-                        Button(
-                            onClick = {
-                                val intent = Intent(Intent.ACTION_VIEW, article.url.toUri())
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            ),
-                            contentPadding = PaddingValues(vertical = 8.dp)
-                        ) {
-                            Text(stringResource(R.string.read_full_article))
-                        }
-                    }
+                    ErrorStateComponent(errorMessage = stringResource(R.string.no_articles_available))
                 }
             }
         }
@@ -316,17 +165,13 @@ fun NewsAppScrollablePreview() {
         )
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("HackerFeed Scrollable") },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                ThemedTopAppBar(
+                    title = { Text("HackerFeed Scrollable") }
                 )
             }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                ArticleList(
+                ArticleListComponent(
                     storyIds = previewUiState.storyIds,
                     articles = previewUiState.articles,
                     favouriteArticleIds = setOf(1L), // Preview with one favourite
