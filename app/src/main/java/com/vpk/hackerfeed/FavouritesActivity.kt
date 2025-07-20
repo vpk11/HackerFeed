@@ -52,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.database.FavouriteArticle
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 
 class FavouritesActivity : ComponentActivity() {
@@ -196,12 +197,8 @@ fun FavouriteArticleCard(
 ) {
     val context = LocalContext.current
 
-    // Determine the card background color based on the current theme (dark/light)
-    val cardBackgroundColor = if (isSystemInDarkTheme()) {
-        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundDark
-    } else {
-        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundLight
-    }
+    // Get the card background color using the reusable helper function
+    val cardBackgroundColor = getCardBackgroundColor()
     val cardContentColor = MaterialTheme.colorScheme.onSurface
 
     Card(
