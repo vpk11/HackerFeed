@@ -64,7 +64,7 @@ import com.vpk.hackerfeed.components.ErrorStateComponent
 import com.vpk.hackerfeed.components.EmptyStateComponent
 import com.vpk.hackerfeed.components.ArticleCard
 
-class MainActivity : ComponentActivity() {
+class NewsActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels {
         ViewModelFactory((application as HackerFeedApplication).container)
     }
