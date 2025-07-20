@@ -34,7 +34,8 @@ class ViewModelFactory(
             CacheViewModel::class.java -> {
                 CacheViewModel(
                     clearCacheUseCase = container.clearCacheUseCase,
-                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase
+                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase,
+                    stringResourceProvider = container.stringResourceProvider
                 ) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

@@ -35,4 +35,10 @@
     <string name="clear_all_cache_description">Removes all cached data. App will need to re-download content.</string>
     <string name="cache_info">Cache helps improve app performance by storing frequently accessed content locally.</string>
     <string name="cache_management_content_desc">Cache Management</string>
+    
+    <!-- Cache operation messages -->
+    <string name="cache_cleared_successfully">All cache cleared successfully</string>
+    <string name="expired_cache_cleared_successfully">Expired cache cleared successfully</string>
+    <string name="failed_to_clear_cache">Failed to clear cache: %1$s</string>
+    <string name="failed_to_clear_expired_cache">Failed to clear expired cache: %1$s</string>
 </resources>

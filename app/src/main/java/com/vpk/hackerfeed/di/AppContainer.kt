@@ -9,6 +9,8 @@ import com.vpk.hackerfeed.data.datasource.LocalNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RemoteNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RoomFavouritesDataSource
 import com.vpk.hackerfeed.data.datasource.RoomNewsDataSource
+import com.vpk.hackerfeed.data.provider.AndroidStringResourceProvider
+import com.vpk.hackerfeed.data.provider.StringResourceProvider
 import com.vpk.hackerfeed.data.repository.FavouritesRepositoryImpl
 import com.vpk.hackerfeed.data.repository.NewsRepositoryImpl
 import com.vpk.hackerfeed.database.AppDatabase
@@ -35,6 +37,9 @@ interface AppContainer {
     val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase
     val clearCacheUseCase: ClearCacheUseCase
     val clearExpiredCacheUseCase: ClearExpiredCacheUseCase
+    
+    // Providers
+    val stringResourceProvider: StringResourceProvider
 }
 
 /**
@@ -77,6 +82,11 @@ class DefaultAppContainer(
     
     private val favouritesRepository: FavouritesRepository by lazy {
         FavouritesRepositoryImpl(localFavouritesDataSource)
+    }
+    
+    // Providers
+    override val stringResourceProvider: StringResourceProvider by lazy {
+        AndroidStringResourceProvider(application)
     }
     
     // Use Cases

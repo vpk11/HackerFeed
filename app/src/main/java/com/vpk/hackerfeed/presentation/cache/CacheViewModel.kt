@@ -2,6 +2,8 @@ package com.vpk.hackerfeed.presentation.cache
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpk.hackerfeed.R
+import com.vpk.hackerfeed.data.provider.StringResourceProvider
 import com.vpk.hackerfeed.domain.usecase.ClearCacheUseCase
 import com.vpk.hackerfeed.domain.usecase.ClearExpiredCacheUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,8 @@ data class CacheUiState(
  */
 class CacheViewModel(
     private val clearCacheUseCase: ClearCacheUseCase,
-    private val clearExpiredCacheUseCase: ClearExpiredCacheUseCase
+    private val clearExpiredCacheUseCase: ClearExpiredCacheUseCase,
+    private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CacheUiState())
@@ -40,7 +43,7 @@ class CacheViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            message = "All cache cleared successfully",
+                            message = stringResourceProvider.getString(R.string.cache_cleared_successfully),
                             error = null
                         )
                     }
@@ -49,7 +52,7 @@ class CacheViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = "Failed to clear cache: ${exception.message}",
+                            error = stringResourceProvider.getString(R.string.failed_to_clear_cache, exception.message ?: ""),
                             message = null
                         )
                     }
@@ -70,7 +73,7 @@ class CacheViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            message = "Expired cache cleared successfully",
+                            message = stringResourceProvider.getString(R.string.expired_cache_cleared_successfully),
                             error = null
                         )
                     }
@@ -79,7 +82,7 @@ class CacheViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = "Failed to clear expired cache: ${exception.message}",
+                            error = stringResourceProvider.getString(R.string.failed_to_clear_expired_cache, exception.message ?: ""),
                             message = null
                         )
                     }
