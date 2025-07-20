@@ -57,4 +57,25 @@
     <string name="app_settings_section">App Settings</string>
     <string name="general_section">General</string>
     <string name="about_app_description">App information and developer details</string>
+    
+    <!-- GDPR Compliance -->
+    <string name="privacy_legal_section">Privacy &amp; Legal</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_description">How we handle your data and privacy</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="terms_conditions_description">Terms of use for this application</string>
+    <string name="data_protection">Data Protection</string>
+    <string name="data_protection_description">Your rights and data protection information</string>
+    
+    <!-- Privacy Policy Content -->
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_content">HackerFeed Privacy Policy\n\nLast updated: July 20, 2025\n\n1. Data We Collect\nWe are committed to protecting your privacy. HackerFeed does not collect any personal data:\n• No personal information (names, emails, phone numbers)\n• No user accounts required\n• All data stored locally on your device only\n\n2. How We Use Data\nThe app only processes data locally:\n• Article favorites are saved on your device\n• Cache data improves app performance\n• No data is sent to external servers\n\n3. Data Sharing\nWe do not share any data with third parties. All information remains on your device.\n\n4. Your Rights\nYou have full control over your data:\n• View all favorites in the app\n• Clear cache through settings\n• Delete all data by uninstalling the app\n\n5. Data Security\nYour data is protected by your device security measures. We recommend keeping your device secure with lock screens and updates.\n\n6. Contact\nFor privacy questions, contact: vishnuprasad.kamalon@gmail.com</string>
+    
+    <!-- Terms and Conditions Content -->
+    <string name="terms_conditions_title">Terms &amp; Conditions</string>
+    <string name="terms_conditions_content">HackerFeed Terms and Conditions\n\nLast updated: July 20, 2025\n\n1. Acceptance of Terms\nBy using HackerFeed, you agree to these terms. If you disagree, please do not use this app.\n\n2. Description of Service\nHackerFeed is a news reader that displays articles from Hacker News. You can:\n• Browse and read news articles\n• Save articles as favorites locally\n• Manage cached content for better performance\n\n3. Your Responsibilities\n• Use the app legally and respectfully\n• Respect intellectual property rights of content creators\n• Use for personal, non-commercial purposes only\n\n4. Content Disclaimer\n• All articles come from Hacker News\n• We do not own or control article content\n• Content accuracy is not guaranteed\n• Original authors retain all rights to their content\n\n5. App Limitations\n• Service provided \"as is\" without warranties\n• Availability depends on internet connection\n• We are not liable for third-party content\n• App functionality may change with updates\n\n6. Privacy\nYour privacy matters. See our Privacy Policy for details on data handling.\n\n7. Changes to Terms\nWe may update these terms occasionally. Changes will be included in app updates.\n\n8. Contact\nQuestions about terms? Contact: vishnuprasad.kamalon@gmail.com</string>
+    
+    <!-- Data Protection Content -->
+    <string name="data_protection_title">Data Protection</string>
+    <string name="data_protection_content">HackerFeed Data Protection Information\n\nYour Rights Under GDPR\n\n1. Right to Information\nYou have the right to know what data we process. HackerFeed processes minimal data:\n• Article favorites (stored locally only)\n• Cache data (stored locally only)\n• No personal identifiers collected\n\n2. Right of Access\nYou can access all your data through the app:\n• View favorites in the Favorites section\n• Check cache usage in Settings\n• All data remains on your device\n\n3. Right to Deletion\nYou can delete your data anytime:\n• Remove individual favorites\n• Clear cache through settings\n• Uninstall app to remove all data\n\n4. Right to Rectification\nSince we don\'t store personal data, you can manage favorites as needed through the app interface.\n\n5. Right to Data Portability\nAll data stays on your device. No data is transmitted to external servers.\n\n6. Right to Object\nYou can stop using the app anytime. No background data processing occurs.\n\n7. Data Processing Legal Basis\n• Legitimate interest: Providing news reading functionality\n• User consent: Saving favorites for better experience\n\n8. Data Security\nYour data is protected by:\n• Local storage only (no cloud transmission)\n• Your device security measures\n• No collection of sensitive personal data\n\n9. Contact for Data Protection\nFor data protection concerns: vishnuprasad.kamalon@gmail.com</string>
 </resources>
