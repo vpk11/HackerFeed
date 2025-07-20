@@ -50,13 +50,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.database.FavouriteArticle
+import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 
 class FavouritesActivity : ComponentActivity() {
-    private val viewModel: FavouritesViewModel by viewModels()
+    private val viewModel: FavouritesViewModel by viewModels {
+        ViewModelFactory((application as HackerFeedApplication).container)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,9 +1,7 @@
 package com.vpk.hackerfeed
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vpk.hackerfeed.database.AppDatabase
 import com.vpk.hackerfeed.repository.FavouritesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,10 +17,9 @@ data class NewsUiState(
     val error: String? = null
 )
 
-class NewsViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val database = AppDatabase.getInstance(application)
-    private val favouritesRepository = FavouritesRepository(database.favouriteArticleDao())
+class NewsViewModel(
+    private val favouritesRepository: FavouritesRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NewsUiState())
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
