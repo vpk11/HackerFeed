@@ -18,8 +18,9 @@ Hackernews at your finger tips\
 - [Project Structure](#project-structure) (Brief Overview)
 ## Features
 
-*   Displays a list of Hackernews
-*   Allows users to read complete article
+*   Displays a list of Hackernews.
+*   Allows users to read complete article.
+*   Allows users to favorite articles and view them later.
 *   "About" screen with app information, developer details, and links to portfolio, LinkedIn, and GitHub.
 *   Modern UI built with Jetpack Compose.
 
