@@ -22,19 +22,26 @@ class NewsRepositoryImpl(
     private val localDataSource: LocalNewsDataSource
 ) : NewsRepository {
     
-    override suspend fun getTopStoryIds(): Result<List<Long>> {
+    override suspend fun getTopStoryIds(forceRefresh: Boolean): Result<List<Long>> {
         return withContext(Dispatchers.IO) {
             try {
-                // First, try to get from cache
-                val cachedStories = localDataSource.getCachedTopStories()
-                if (cachedStories != null) {
-                    Result.success(cachedStories)
-                } else {
-                    // Cache miss, fetch from remote
+                if (forceRefresh) {
+                    // Force refresh: always fetch from remote and update cache
                     val remoteStories = remoteDataSource.getTopStoryIds()
-                    // Cache the result for future use
                     localDataSource.cacheTopStories(remoteStories)
                     Result.success(remoteStories)
+                } else {
+                    // Normal flow: try cache first, then remote
+                    val cachedStories = localDataSource.getCachedTopStories()
+                    if (cachedStories != null) {
+                        Result.success(cachedStories)
+                    } else {
+                        // Cache miss, fetch from remote
+                        val remoteStories = remoteDataSource.getTopStoryIds()
+                        // Cache the result for future use
+                        localDataSource.cacheTopStories(remoteStories)
+                        Result.success(remoteStories)
+                    }
                 }
             } catch (e: Exception) {
                 // If we have cached data, return it even if it's expired (fallback strategy)
@@ -53,19 +60,26 @@ class NewsRepositoryImpl(
         }
     }
     
-    override suspend fun getArticleDetails(id: Long): Result<Article> {
+    override suspend fun getArticleDetails(id: Long, forceRefresh: Boolean): Result<Article> {
         return withContext(Dispatchers.IO) {
             try {
-                // First, try to get from cache
-                val cachedArticle = localDataSource.getCachedArticle(id)
-                if (cachedArticle != null) {
-                    Result.success(cachedArticle)
-                } else {
-                    // Cache miss, fetch from remote
+                if (forceRefresh) {
+                    // Force refresh: always fetch from remote and update cache
                     val remoteArticle = remoteDataSource.getArticleDetails(id)
-                    // Cache the result for future use
                     localDataSource.cacheArticle(remoteArticle)
                     Result.success(remoteArticle)
+                } else {
+                    // Normal flow: try cache first, then remote
+                    val cachedArticle = localDataSource.getCachedArticle(id)
+                    if (cachedArticle != null) {
+                        Result.success(cachedArticle)
+                    } else {
+                        // Cache miss, fetch from remote
+                        val remoteArticle = remoteDataSource.getArticleDetails(id)
+                        // Cache the result for future use
+                        localDataSource.cacheArticle(remoteArticle)
+                        Result.success(remoteArticle)
+                    }
                 }
             } catch (e: Exception) {
                 // If we have cached data, return it even if it's expired (fallback strategy)

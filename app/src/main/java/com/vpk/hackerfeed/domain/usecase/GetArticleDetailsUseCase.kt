@@ -10,9 +10,9 @@ import com.vpk.hackerfeed.domain.repository.NewsRepository
 class GetArticleDetailsUseCase(
     private val newsRepository: NewsRepository
 ) {
-    suspend operator fun invoke(articleId: Long): Result<Article> {
+    suspend operator fun invoke(articleId: Long, forceRefresh: Boolean = false): Result<Article> {
         return try {
-            newsRepository.getArticleDetails(articleId)
+            newsRepository.getArticleDetails(articleId, forceRefresh)
         } catch (e: Exception) {
             Result.failure(e)
         }

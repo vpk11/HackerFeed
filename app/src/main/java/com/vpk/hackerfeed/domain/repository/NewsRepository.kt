@@ -7,6 +7,6 @@ import com.vpk.hackerfeed.domain.model.Article
  * This defines the contract for news data operations in the domain layer.
  */
 interface NewsRepository {
-    suspend fun getTopStoryIds(): Result<List<Long>>
-    suspend fun getArticleDetails(id: Long): Result<Article>
+    suspend fun getTopStoryIds(forceRefresh: Boolean = false): Result<List<Long>>
+    suspend fun getArticleDetails(id: Long, forceRefresh: Boolean = false): Result<Article>
 }

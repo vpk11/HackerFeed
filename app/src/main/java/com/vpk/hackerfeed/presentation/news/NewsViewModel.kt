@@ -73,7 +73,7 @@ class NewsViewModel(
                 _uiState.update { it.copy(isLoading = true, error = null) }
             }
             
-            getTopStoriesUseCase().fold(
+            getTopStoriesUseCase(forceRefresh = isRefresh).fold(
                 onSuccess = { ids ->
                     _uiState.update {
                         it.copy(
@@ -108,10 +108,13 @@ class NewsViewModel(
     }
 
     fun fetchArticleDetails(id: Long) {
-        if (_uiState.value.articles[id] != null && !_isRefreshing.value) return
+        // During refresh, we want to force refresh articles as well to get fresh data
+        val shouldForceRefresh = _isRefreshing.value
+        
+        if (_uiState.value.articles[id] != null && !shouldForceRefresh) return
 
         viewModelScope.launch {
-            getArticleDetailsUseCase(id).fold(
+            getArticleDetailsUseCase(id, forceRefresh = shouldForceRefresh).fold(
                 onSuccess = { article ->
                     _uiState.update { currentState ->
                         val updatedArticles = currentState.articles.toMutableMap()
