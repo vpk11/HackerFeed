@@ -188,11 +188,11 @@ class CacheManager(
     }
     
     /**
-     * Performs cache cleanup if the cache size exceeds the threshold.
+     * Performs cache cleanup if the cache size exceeds the maximum limit.
      */
     private suspend fun performCacheCleanupIfNeeded() {
         val cacheCount = cachedArticleDao.getCachedArticleCount()
-        if (cacheCount > CacheConfig.MAX_CACHED_ARTICLES * CacheConfig.CACHE_CLEANUP_THRESHOLD) {
+        if (cacheCount > CacheConfig.MAX_CACHED_ARTICLES) {
             // Keep only the most recent articles up to the limit
             val recentArticles = cachedArticleDao.getRecentCachedArticles(CacheConfig.MAX_CACHED_ARTICLES)
             // Use atomic operation to prevent data loss if operation fails
