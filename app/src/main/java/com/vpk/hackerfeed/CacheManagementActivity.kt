@@ -73,14 +73,17 @@ fun CacheManagementScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     
     // Show snackbar for messages and errors
-    LaunchedEffect(uiState.message, uiState.error) {
+    LaunchedEffect(uiState.message) {
         uiState.message?.let { message ->
             snackbarHostState.showSnackbar(message)
-            viewModel.clearMessage()
+            viewModel.clearMessageOnly()
         }
+    }
+    
+    LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
-            viewModel.clearMessage()
+            viewModel.clearErrorOnly()
         }
     }
     
