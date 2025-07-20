@@ -104,8 +104,4 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
             favouritesRepository.toggleFavourite(article)
         }
     }
-
-    fun isArticleFavourite(articleId: Long): Boolean {
-        return _uiState.value.favouriteArticleIds.contains(articleId)
-    }
 }
