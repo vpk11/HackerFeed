@@ -11,10 +11,6 @@ class GetArticleDetailsUseCase(
     private val newsRepository: NewsRepository
 ) {
     suspend operator fun invoke(articleId: Long, forceRefresh: Boolean = false): Result<Article> {
-        return try {
-            newsRepository.getArticleDetails(articleId, forceRefresh)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return newsRepository.getArticleDetails(articleId, forceRefresh)
     }
 }

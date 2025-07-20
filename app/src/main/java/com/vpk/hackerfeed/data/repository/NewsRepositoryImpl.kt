@@ -97,55 +97,7 @@ class NewsRepositoryImpl(
             }
         }
     }
-    
-    /**
-     * Batch fetch multiple articles with caching support.
-     * This method optimizes cache usage by fetching only missing articles from remote.
-     */
-    suspend fun getMultipleArticleDetails(ids: List<Long>): Result<Map<Long, Article>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                // Get cached articles
-                val cachedArticles = localDataSource.getCachedArticles(ids)
-                val missingIds = ids - cachedArticles.keys
-                
-                if (missingIds.isEmpty()) {
-                    // All articles are cached
-                    Result.success(cachedArticles)
-                } else {
-                    // Fetch missing articles from remote
-                    val remoteArticles = mutableMapOf<Long, Article>()
-                    val errors = mutableListOf<Exception>()
-                    
-                    for (id in missingIds) {
-                        try {
-                            val article = remoteDataSource.getArticleDetails(id)
-                            remoteArticles[id] = article
-                        } catch (e: Exception) {
-                            errors.add(e)
-                        }
-                    }
-                    
-                    // Cache the newly fetched articles
-                    if (remoteArticles.isNotEmpty()) {
-                        localDataSource.cacheArticles(remoteArticles.values.toList())
-                    }
-                    
-                    // Combine cached and remote articles
-                    val allArticles = cachedArticles + remoteArticles
-                    
-                    if (errors.isNotEmpty() && allArticles.isEmpty()) {
-                        Result.failure(errors.first())
-                    } else {
-                        Result.success(allArticles)
-                    }
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
-    
+
     /**
      * Clears all cached data.
      */

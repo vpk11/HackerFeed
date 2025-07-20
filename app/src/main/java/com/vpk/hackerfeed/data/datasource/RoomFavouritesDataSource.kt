@@ -15,33 +15,13 @@ class RoomFavouritesDataSource(
     
     override fun getAllFavourites(): Flow<List<FavouriteArticle>> {
         return dao.getAllFavourites().map { entities ->
-            entities.map { entity ->
-                FavouriteArticle(
-                    id = entity.id,
-                    title = entity.title,
-                    author = entity.author,
-                    score = entity.score,
-                    time = entity.time,
-                    url = entity.url,
-                    dateAdded = entity.dateAdded
-                )
-            }
+            entities.map { it.toDomainModel() }
         }
     }
     
     override suspend fun getFavouriteById(id: Long): FavouriteArticle? {
         val entity = dao.getFavouriteById(id)
-        return entity?.let {
-            FavouriteArticle(
-                id = it.id,
-                title = it.title,
-                author = it.author,
-                score = it.score,
-                time = it.time,
-                url = it.url,
-                dateAdded = it.dateAdded
-            )
-        }
+        return entity?.toDomainModel()
     }
     
     override suspend fun isFavourite(id: Long): Boolean {
@@ -49,16 +29,7 @@ class RoomFavouritesDataSource(
     }
     
     override suspend fun insertFavourite(article: FavouriteArticle) {
-        val entity = com.vpk.hackerfeed.database.FavouriteArticle(
-            id = article.id,
-            title = article.title,
-            author = article.author,
-            score = article.score,
-            time = article.time,
-            url = article.url,
-            dateAdded = article.dateAdded
-        )
-        dao.insertFavourite(entity)
+        dao.insertFavourite(article.toEntity())
     }
     
     override suspend fun deleteFavouriteById(id: Long) {
@@ -66,15 +37,31 @@ class RoomFavouritesDataSource(
     }
     
     override suspend fun toggleFavourite(article: FavouriteArticle) {
-        val entity = com.vpk.hackerfeed.database.FavouriteArticle(
-            id = article.id,
-            title = article.title,
-            author = article.author,
-            score = article.score,
-            time = article.time,
-            url = article.url,
-            dateAdded = article.dateAdded
-        )
-        dao.toggle(entity)
+        dao.toggle(article.toEntity())
     }
+}
+
+// Extension functions for mapping between database entity and domain model
+private fun com.vpk.hackerfeed.database.FavouriteArticle.toDomainModel(): FavouriteArticle {
+    return FavouriteArticle(
+        id = this.id,
+        title = this.title,
+        author = this.author,
+        score = this.score,
+        time = this.time,
+        url = this.url,
+        dateAdded = this.dateAdded
+    )
+}
+
+private fun FavouriteArticle.toEntity(): com.vpk.hackerfeed.database.FavouriteArticle {
+    return com.vpk.hackerfeed.database.FavouriteArticle(
+        id = this.id,
+        title = this.title,
+        author = this.author,
+        score = this.score,
+        time = this.time,
+        url = this.url,
+        dateAdded = this.dateAdded
+    )
 }
