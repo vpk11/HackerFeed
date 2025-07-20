@@ -90,12 +90,12 @@ fun CacheManagementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Cache Management") },
+                title = { Text(stringResource(R.string.cache_management)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.navigate_back_content_desc)
                         )
                     }
                 },
@@ -118,14 +118,13 @@ fun CacheManagementScreen(
         ) {
             
             Text(
-                text = "Manage App Cache",
+                text = stringResource(R.string.manage_app_cache),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
             
             Text(
-                text = "Clear cached data to free up storage space or refresh content. " +
-                        "Clearing cache will require re-downloading content from the internet.",
+                text = stringResource(R.string.cache_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -136,7 +135,7 @@ fun CacheManagementScreen(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
                 Text(
-                    text = "Processing...",
+                    text = stringResource(R.string.processing),
                     style = MaterialTheme.typography.bodyMedium
                 )
             } else {
@@ -144,11 +143,11 @@ fun CacheManagementScreen(
                     onClick = { viewModel.clearExpiredCache() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Clear Expired Cache")
+                    Text(stringResource(R.string.clear_expired_cache))
                 }
                 
                 Text(
-                    text = "Removes only outdated cache entries while keeping recent data",
+                    text = stringResource(R.string.clear_expired_cache_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -158,11 +157,11 @@ fun CacheManagementScreen(
                     onClick = { viewModel.clearAllCache() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Clear All Cache")
+                    Text(stringResource(R.string.clear_all_cache))
                 }
                 
                 Text(
-                    text = "Removes all cached data. App will need to re-download content.",
+                    text = stringResource(R.string.clear_all_cache_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -172,7 +171,7 @@ fun CacheManagementScreen(
             Spacer(modifier = Modifier.weight(1f))
             
             Text(
-                text = "Cache helps improve app performance by storing frequently accessed content locally.",
+                text = stringResource(R.string.cache_info),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center

@@ -11,6 +11,7 @@ This document outlines key considerations when using Copilot for this Jetpack Co
 * **Modularity & Reusability:** Encourage small, focused, and reusable `@Composable` functions. Think components.
 * **Performance Awareness:** Avoid unnecessary recompositions. Utilize `key`s in `LazyColumn`/`LazyRow` and `derivedStateOf` where appropriate.
 * **Resource Management:** Be mindful of string, dimension, color, and drawable resources. Encourage referencing existing resources where appropriate.
+* **String Resources:** Use `stringResource(R.string.key)` instead of hardcoded strings. Extract all user-facing text to `strings.xml` for localization and accessibility.
 
 ### Kotlin Code
 

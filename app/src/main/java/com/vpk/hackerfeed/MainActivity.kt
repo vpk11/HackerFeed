@@ -124,7 +124,7 @@ fun NewsApp(viewModel: NewsViewModel) {
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Storage,
-                            contentDescription = "Cache Management"
+                            contentDescription = stringResource(R.string.cache_management_content_desc)
                         )
                     }
                     IconButton(onClick = {
