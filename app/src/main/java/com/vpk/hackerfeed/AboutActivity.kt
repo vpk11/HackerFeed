@@ -8,7 +8,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import com.vpk.hackerfeed.ui.theme.GithubDarkGray
+import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class AboutActivity : ComponentActivity() {
@@ -57,7 +54,7 @@ class AboutActivity : ComponentActivity() {
                 ) {
                     Scaffold(
                         topBar = {
-                            TopAppBar(
+                            ThemedTopAppBar(
                                 title = { Text(stringResource(id = R.string.about_hackerfeed_title)) },
                                 navigationIcon = {
                                     IconButton(onClick = { finish() }) {
@@ -66,19 +63,6 @@ class AboutActivity : ComponentActivity() {
                                             contentDescription = stringResource(id = R.string.navigate_back_content_desc)
                                         )
                                     }
-                                },
-                                colors = if (isSystemInDarkTheme()) {
-                                    TopAppBarDefaults.topAppBarColors(
-                                        containerColor = GithubDarkGray,
-                                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                                        actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                                    )
-                                } else {
-                                    TopAppBarDefaults.topAppBarColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                                    )
                                 }
                             )
                         }
@@ -210,7 +194,7 @@ fun AboutScreenDarkPreview() {
         Surface {
             Scaffold(
                 topBar = {
-                    TopAppBar(
+                    ThemedTopAppBar(
                         title = { Text(stringResource(R.string.about_hackerfeed_title)) },
                         navigationIcon = {
                             IconButton(onClick = { }) {
@@ -219,12 +203,7 @@ fun AboutScreenDarkPreview() {
                                     contentDescription = stringResource(R.string.navigate_back_content_desc)
                                 )
                             }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        }
                     )
                 }
             ) { paddingValues ->
@@ -242,7 +221,7 @@ fun AboutScreenLightPreview() {
         Surface {
             Scaffold(
                 topBar = {
-                    TopAppBar(
+                    ThemedTopAppBar(
                         title = { Text(stringResource(R.string.about_hackerfeed_title)) },
                         navigationIcon = {
                             IconButton(onClick = { }) {
@@ -251,12 +230,7 @@ fun AboutScreenLightPreview() {
                                     contentDescription = stringResource(R.string.navigate_back_content_desc)
                                 )
                             }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        }
                     )
                 }
             ) { paddingValues ->

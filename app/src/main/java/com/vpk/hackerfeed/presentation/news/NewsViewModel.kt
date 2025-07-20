@@ -10,6 +10,9 @@ import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.GetTopStoriesUseCase
 import com.vpk.hackerfeed.domain.usecase.ToggleFavouriteUseCase
 import com.vpk.hackerfeed.domain.usecase.ClearExpiredCacheUseCase
+import com.vpk.hackerfeed.presentation.base.BaseUiState
+import com.vpk.hackerfeed.presentation.base.UiStateManager
+import com.vpk.hackerfeed.presentation.base.handleResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +20,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class NewsUiState(
-    val isLoading: Boolean = true,
+    override val isLoading: Boolean = true,
     val storyIds: List<Long> = emptyList(),
     val articles: Map<Long, Article?> = emptyMap(),
     val favouriteArticleIds: Set<Long> = emptySet(),
-    val error: String? = null
-)
+    override val error: String? = null
+) : BaseUiState
 
 class NewsViewModel(
     private val getTopStoriesUseCase: GetTopStoriesUseCase,
@@ -33,8 +36,8 @@ class NewsViewModel(
     private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(NewsUiState())
-    val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
+    private val uiStateManager = UiStateManager(NewsUiState())
+    val uiState: StateFlow<NewsUiState> = uiStateManager.uiState
 
     // Pull to refresh state
     private val _isRefreshing = MutableStateFlow(false)
@@ -63,7 +66,7 @@ class NewsViewModel(
     private fun observeFavourites() {
         viewModelScope.launch {
             getFavouriteArticlesUseCase().collect { favourites ->
-                _uiState.update { 
+                uiStateManager.updateState { 
                     it.copy(favouriteArticleIds = favourites.map { fav -> fav.id }.toSet()) 
                 }
             }
@@ -73,27 +76,24 @@ class NewsViewModel(
     private fun fetchTopStories(isRefresh: Boolean = false) {
         viewModelScope.launch {
             if (!isRefresh) {
-                _uiState.update { it.copy(isLoading = true, error = null) }
+                uiStateManager.setLoading { it.copy(isLoading = true, error = null) }
             }
             
-            getTopStoriesUseCase(forceRefresh = isRefresh).fold(
+            uiStateManager.handleResult(
+                result = getTopStoriesUseCase(forceRefresh = isRefresh),
                 onSuccess = { ids ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            storyIds = ids,
-                            articles = if (isRefresh) emptyMap() else it.articles,
-                            error = null
-                        )
-                    }
+                    uiStateManager.currentState.copy(
+                        isLoading = false,
+                        storyIds = ids,
+                        articles = if (isRefresh) emptyMap() else uiStateManager.currentState.articles,
+                        error = null
+                    )
                 },
-                onFailure = { exception ->
-                    _uiState.update { 
-                        it.copy(
-                            isLoading = false, 
-                            error = stringResourceProvider.getString(R.string.failed_to_load_stories, exception.message ?: "")
-                        ) 
-                    }
+                onError = { errorMessage ->
+                    uiStateManager.currentState.copy(
+                        isLoading = false, 
+                        error = stringResourceProvider.getString(R.string.failed_to_load_stories, errorMessage)
+                    )
                 }
             )
             
@@ -106,7 +106,7 @@ class NewsViewModel(
     fun refreshTopStories() {
         if (_isRefreshing.value) return
         _isRefreshing.value = true
-        _uiState.update { it.copy(error = null) }
+        uiStateManager.updateState { it.copy(error = null) }
         fetchTopStories(isRefresh = true)
     }
 
@@ -114,19 +114,19 @@ class NewsViewModel(
         // During refresh, we want to force refresh articles as well to get fresh data
         val shouldForceRefresh = _isRefreshing.value
         
-        if (_uiState.value.articles[id] != null && !shouldForceRefresh) return
+        if (uiStateManager.currentState.articles[id] != null && !shouldForceRefresh) return
 
         viewModelScope.launch {
             getArticleDetailsUseCase(id, forceRefresh = shouldForceRefresh).fold(
                 onSuccess = { article ->
-                    _uiState.update { currentState ->
+                    uiStateManager.updateState { currentState ->
                         val updatedArticles = currentState.articles.toMutableMap()
                         updatedArticles[id] = article
                         currentState.copy(articles = updatedArticles)
                     }
                 },
                 onFailure = { exception ->
-                    _uiState.update { currentState ->
+                    uiStateManager.updateState { currentState ->
                         val updatedArticles = currentState.articles.toMutableMap()
                         updatedArticles[id] = null // Mark as failed/not loaded
                         currentState.copy(
@@ -146,7 +146,7 @@ class NewsViewModel(
                     // Success - the UI state will be updated through observeFavourites()
                 },
                 onFailure = { exception ->
-                    _uiState.update { 
+                    uiStateManager.setError { 
                         it.copy(error = stringResourceProvider.getString(R.string.failed_to_toggle_favourite, exception.message ?: "")) 
                     }
                 }
