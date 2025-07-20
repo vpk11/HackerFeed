@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,4 +28,13 @@ interface FavouriteArticleDao {
     
     @Delete
     suspend fun deleteFavourite(article: FavouriteArticle)
+    
+    @Transaction
+    suspend fun toggle(article: FavouriteArticle) {
+        if (isFavourite(article.id)) {
+            deleteFavouriteById(article.id)
+        } else {
+            insertFavourite(article)
+        }
+    }
 }

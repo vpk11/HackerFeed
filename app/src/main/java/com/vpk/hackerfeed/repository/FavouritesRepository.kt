@@ -28,10 +28,14 @@ class FavouritesRepository(private val dao: FavouriteArticleDao) {
     }
     
     suspend fun toggleFavourite(article: Article) {
-        if (isFavourite(article.id)) {
-            removeFromFavourites(article.id)
-        } else {
-            addToFavourites(article)
-        }
+        val favouriteArticle = FavouriteArticle(
+            id = article.id,
+            title = article.title,
+            author = article.author,
+            score = article.score,
+            time = article.time,
+            url = article.url
+        )
+        dao.toggle(favouriteArticle)
     }
 }
