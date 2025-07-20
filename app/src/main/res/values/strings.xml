@@ -20,4 +20,9 @@
     <string name="about_hackerfeed_title" />
     <string name="navigate_back_content_desc">Back</string>
     <string name="about">About</string>
+    <string name="favourites_title">Favourites</string>
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
+    <string name="no_favourites">No favourites yet</string>
+    <string name="no_favourites_description">Tap the heart icon on any article to add it to your favourites</string>
 </resources>

@@ -1,7 +1,10 @@
 package com.vpk.hackerfeed
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpk.hackerfeed.database.AppDatabase
+import com.vpk.hackerfeed.repository.FavouritesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,10 +15,14 @@ data class NewsUiState(
     val isLoading: Boolean = true,
     val storyIds: List<Long> = emptyList(),
     val articles: Map<Long, Article?> = emptyMap(),
+    val favouriteArticleIds: Set<Long> = emptySet(),
     val error: String? = null
 )
 
-class NewsViewModel : ViewModel() {
+class NewsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val database = AppDatabase.getInstance(application)
+    private val favouritesRepository = FavouritesRepository(database.favouriteArticleDao())
 
     private val _uiState = MutableStateFlow(NewsUiState())
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
@@ -26,6 +33,15 @@ class NewsViewModel : ViewModel() {
 
     init {
         fetchTopStories()
+        observeFavourites()
+    }
+
+    private fun observeFavourites() {
+        viewModelScope.launch {
+            favouritesRepository.getAllFavourites().collect { favourites ->
+                _uiState.update { it.copy(favouriteArticleIds = favourites.map { fav -> fav.id }.toSet()) }
+            }
+        }
     }
 
     private fun fetchTopStories(isRefresh: Boolean = false) {
@@ -81,5 +97,15 @@ class NewsViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun toggleFavourite(article: Article) {
+        viewModelScope.launch {
+            favouritesRepository.toggleFavourite(article)
+        }
+    }
+
+    fun isArticleFavourite(articleId: Long): Boolean {
+        return _uiState.value.favouriteArticleIds.contains(articleId)
     }
 }

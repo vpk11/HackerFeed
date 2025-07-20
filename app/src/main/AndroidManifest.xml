@@ -18,6 +18,9 @@
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
+            android:name=".FavouritesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

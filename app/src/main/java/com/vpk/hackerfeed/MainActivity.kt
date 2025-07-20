@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -97,6 +100,15 @@ fun NewsApp(viewModel: NewsViewModel) {
                 },
                 actions = {
                     IconButton(onClick = {
+                        val intent = Intent(localContext, FavouritesActivity::class.java)
+                        localContext.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = stringResource(R.string.favourites_title)
+                        )
+                    }
+                    IconButton(onClick = {
                         val intent = Intent(localContext, AboutActivity::class.java)
                         localContext.startActivity(intent)
                     }) {
@@ -131,7 +143,9 @@ fun NewsApp(viewModel: NewsViewModel) {
                     ArticleList(
                         storyIds = uiState.storyIds,
                         articles = uiState.articles,
-                        onFetchArticle = { id -> viewModel.fetchArticleDetails(id) }
+                        favouriteArticleIds = uiState.favouriteArticleIds,
+                        onFetchArticle = { id -> viewModel.fetchArticleDetails(id) },
+                        onToggleFavourite = { article -> viewModel.toggleFavourite(article) }
                     )
                 } else if (!uiState.isLoading && !isRefreshing) {
                     Text(
@@ -148,7 +162,9 @@ fun NewsApp(viewModel: NewsViewModel) {
 fun ArticleList(
     storyIds: List<Long>,
     articles: Map<Long, Article?>,
-    onFetchArticle: (Long) -> Unit
+    favouriteArticleIds: Set<Long>,
+    onFetchArticle: (Long) -> Unit,
+    onToggleFavourite: (Article) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -168,6 +184,10 @@ fun ArticleList(
 
             ArticleCard(
                 article = article,
+                isFavourite = favouriteArticleIds.contains(articleId),
+                onToggleFavourite = { 
+                    article?.let { onToggleFavourite(it) }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
@@ -177,7 +197,12 @@ fun ArticleList(
 }
 
 @Composable
-fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
+fun ArticleCard(
+    article: Article?, 
+    isFavourite: Boolean = false,
+    onToggleFavourite: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
     // Determine the card background color based on the current theme (dark/light)
@@ -209,24 +234,46 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Column {
-                        Text(
-                            text = article.title ?: stringResource(R.string.no_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "by ${article.author ?: stringResource(R.string.unknown)}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.points, article.score ?: 0),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = article.title ?: stringResource(R.string.no_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "by ${article.author ?: stringResource(R.string.unknown)}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = stringResource(R.string.points, article.score ?: 0),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                        IconButton(
+                            onClick = onToggleFavourite,
+                            modifier = Modifier.padding(start = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = if (isFavourite) 
+                                    stringResource(R.string.remove_from_favourites) 
+                                else 
+                                    stringResource(R.string.add_to_favourites),
+                                tint = if (isFavourite) 
+                                    MaterialTheme.colorScheme.primary 
+                                else 
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
                     }
                     if (article.url != null) {
                         Button(
@@ -278,7 +325,9 @@ fun NewsAppScrollablePreview() {
                 ArticleList(
                     storyIds = previewUiState.storyIds,
                     articles = previewUiState.articles,
-                    onFetchArticle = {}
+                    favouriteArticleIds = setOf(1L), // Preview with one favourite
+                    onFetchArticle = {},
+                    onToggleFavourite = {}
                 )
             }
         }
@@ -301,6 +350,8 @@ fun ArticleCardInListPreview() {
         Box(modifier = Modifier.padding(16.dp)) {
             ArticleCard(
                 article = previewArticle,
+                isFavourite = true,
+                onToggleFavourite = {},
                 modifier = Modifier.fillMaxWidth()
             )
         }
