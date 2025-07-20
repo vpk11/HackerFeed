@@ -61,6 +61,7 @@ import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.components.ArticleListComponent
 import com.vpk.hackerfeed.components.LoadingStateComponent
 import com.vpk.hackerfeed.components.ErrorStateComponent
+import com.vpk.hackerfeed.components.EmptyStateComponent
 import com.vpk.hackerfeed.components.ArticleCard
 
 class MainActivity : ComponentActivity() {
@@ -143,7 +144,11 @@ fun NewsApp(viewModel: NewsViewModel) {
                         onToggleFavourite = { article -> viewModel.toggleFavourite(article) }
                     )
                 } else if (!uiState.isLoading && !isRefreshing) {
-                    ErrorStateComponent(errorMessage = stringResource(R.string.no_articles_available))
+                    EmptyStateComponent(
+                        icon = Icons.Filled.Info,
+                        title = stringResource(R.string.no_articles_available),
+                        description = null
+                    )
                 }
             }
         }
