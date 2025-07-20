@@ -149,7 +149,7 @@ class NewsRepositoryImpl(
     /**
      * Clears all cached data.
      */
-    suspend fun clearCache(): Result<Unit> {
+    override suspend fun clearCache(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 localDataSource.clearCache()
@@ -163,7 +163,7 @@ class NewsRepositoryImpl(
     /**
      * Clears expired cache entries.
      */
-    suspend fun clearExpiredCache(): Result<Unit> {
+    override suspend fun clearExpiredCache(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 localDataSource.clearExpiredCache()

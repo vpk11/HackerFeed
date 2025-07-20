@@ -101,10 +101,10 @@ class DefaultAppContainer(
     }
     
     override val clearCacheUseCase: ClearCacheUseCase by lazy {
-        ClearCacheUseCase(newsRepository as NewsRepositoryImpl)
+        ClearCacheUseCase(newsRepository)
     }
     
     override val clearExpiredCacheUseCase: ClearExpiredCacheUseCase by lazy {
-        ClearExpiredCacheUseCase(newsRepository as NewsRepositoryImpl)
+        ClearExpiredCacheUseCase(newsRepository)
     }
 }

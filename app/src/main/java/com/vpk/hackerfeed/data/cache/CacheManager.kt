@@ -195,8 +195,8 @@ class CacheManager(
         if (cacheCount > CacheConfig.MAX_CACHED_ARTICLES * CacheConfig.CACHE_CLEANUP_THRESHOLD) {
             // Keep only the most recent articles up to the limit
             val recentArticles = cachedArticleDao.getRecentCachedArticles(CacheConfig.MAX_CACHED_ARTICLES)
-            cachedArticleDao.clearAllCachedArticles()
-            cachedArticleDao.insertCachedArticles(recentArticles)
+            // Use atomic operation to prevent data loss if operation fails
+            cachedArticleDao.replaceAllCachedArticles(recentArticles)
         }
     }
 }

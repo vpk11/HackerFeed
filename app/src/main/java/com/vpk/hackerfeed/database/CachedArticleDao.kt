@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 
 /**
  * DAO for managing cached articles.
@@ -35,4 +36,14 @@ interface CachedArticleDao {
     
     @Query("SELECT * FROM cached_articles ORDER BY cachedAt DESC LIMIT :limit")
     suspend fun getRecentCachedArticles(limit: Int): List<CachedArticle>
+    
+    /**
+     * Atomically replaces all cached articles with the provided list.
+     * This ensures that if the operation fails, the cache remains in a consistent state.
+     */
+    @Transaction
+    suspend fun replaceAllCachedArticles(articles: List<CachedArticle>) {
+        clearAllCachedArticles()
+        insertCachedArticles(articles)
+    }
 }

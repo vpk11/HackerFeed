@@ -9,4 +9,6 @@ import com.vpk.hackerfeed.domain.model.Article
 interface NewsRepository {
     suspend fun getTopStoryIds(forceRefresh: Boolean = false): Result<List<Long>>
     suspend fun getArticleDetails(id: Long, forceRefresh: Boolean = false): Result<Article>
+    suspend fun clearCache(): Result<Unit>
+    suspend fun clearExpiredCache(): Result<Unit>
 }
