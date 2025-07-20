@@ -26,9 +26,6 @@ interface FavouriteArticleDao {
     @Query("DELETE FROM favourite_articles WHERE id = :id")
     suspend fun deleteFavouriteById(id: Long)
     
-    @Delete
-    suspend fun deleteFavourite(article: FavouriteArticle)
-    
     @Transaction
     suspend fun toggle(article: FavouriteArticle) {
         if (isFavourite(article.id)) {
