@@ -1,0 +1,72 @@
+# Dependabot configuration for HackerFeed Android project
+# This file configures Dependabot to automatically check for dependency updates
+# and create pull requests when newer versions are available.
+
+version: 2
+updates:
+  # Enable version updates for Gradle dependencies
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "vpk11"
+    assignees:
+      - "vpk11"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "gradle"
+    # Group related updates together to reduce PR noise
+    groups:
+      android-core:
+        patterns:
+          - "androidx.*"
+          - "com.android.*"
+      compose:
+        patterns:
+          - "*compose*"
+          - "androidx.compose.*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"
+      networking:
+        patterns:
+          - "com.squareup.retrofit*"
+          - "com.google.code.gson*"
+      room:
+        patterns:
+          - "androidx.room*"
+      testing:
+        patterns:
+          - "*junit*"
+          - "*espresso*"
+          - "*test*"
+
+  # Enable version updates for GitHub Actions (if you add any workflows)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "vpk11"
+    assignees:
+      - "vpk11"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
