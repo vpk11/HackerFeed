@@ -131,10 +131,11 @@ fun NewsApp(viewModel: NewsViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+                val error = uiState.error
                 if (uiState.isLoading && uiState.storyIds.isEmpty() && !isRefreshing) {
                     LoadingStateComponent()
-                } else if (uiState.error != null && !isRefreshing) {
-                    ErrorStateComponent(errorMessage = uiState.error!!)
+                } else if (error != null && !isRefreshing) {
+                    ErrorStateComponent(errorMessage = error)
                 } else if (uiState.storyIds.isNotEmpty()) {
                     ArticleListComponent(
                         storyIds = uiState.storyIds,
