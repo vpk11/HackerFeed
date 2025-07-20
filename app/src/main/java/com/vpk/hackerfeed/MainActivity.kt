@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,16 +45,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
+import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: NewsViewModel by viewModels()
+    private val viewModel: NewsViewModel by viewModels {
+        ViewModelFactory((application as HackerFeedApplication).container)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +106,15 @@ fun NewsApp(viewModel: NewsViewModel) {
                 },
                 actions = {
                     IconButton(onClick = {
+                        val intent = Intent(localContext, FavouritesActivity::class.java)
+                        localContext.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = stringResource(R.string.favourites_title)
+                        )
+                    }
+                    IconButton(onClick = {
                         val intent = Intent(localContext, AboutActivity::class.java)
                         localContext.startActivity(intent)
                     }) {
@@ -131,7 +149,9 @@ fun NewsApp(viewModel: NewsViewModel) {
                     ArticleList(
                         storyIds = uiState.storyIds,
                         articles = uiState.articles,
-                        onFetchArticle = { id -> viewModel.fetchArticleDetails(id) }
+                        favouriteArticleIds = uiState.favouriteArticleIds,
+                        onFetchArticle = { id -> viewModel.fetchArticleDetails(id) },
+                        onToggleFavourite = { article -> viewModel.toggleFavourite(article) }
                     )
                 } else if (!uiState.isLoading && !isRefreshing) {
                     Text(
@@ -148,7 +168,9 @@ fun NewsApp(viewModel: NewsViewModel) {
 fun ArticleList(
     storyIds: List<Long>,
     articles: Map<Long, Article?>,
-    onFetchArticle: (Long) -> Unit
+    favouriteArticleIds: Set<Long>,
+    onFetchArticle: (Long) -> Unit,
+    onToggleFavourite: (Article) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -168,6 +190,10 @@ fun ArticleList(
 
             ArticleCard(
                 article = article,
+                isFavourite = favouriteArticleIds.contains(articleId),
+                onToggleFavourite = { 
+                    article?.let { onToggleFavourite(it) }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
@@ -177,15 +203,16 @@ fun ArticleList(
 }
 
 @Composable
-fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
+fun ArticleCard(
+    article: Article?, 
+    isFavourite: Boolean = false,
+    onToggleFavourite: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
-    // Determine the card background color based on the current theme (dark/light)
-    val cardBackgroundColor = if (isSystemInDarkTheme()) {
-        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundDark
-    } else {
-        com.vpk.hackerfeed.ui.theme.GithubCardBackgroundLight
-    }
+    // Get the card background color using the reusable helper function
+    val cardBackgroundColor = getCardBackgroundColor()
     val cardContentColor = MaterialTheme.colorScheme.onSurface
 
     Card(
@@ -209,23 +236,34 @@ fun ArticleCard(article: Article?, modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Column {
-                        Text(
-                            text = article.title ?: stringResource(R.string.no_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "by ${article.author ?: stringResource(R.string.unknown)}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.points, article.score ?: 0),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.secondary
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = article.title ?: stringResource(R.string.no_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "by ${article.author ?: stringResource(R.string.unknown)}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = stringResource(R.string.points, article.score ?: 0),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                        AnimatedFavoriteButton(
+                            isFavourite = isFavourite,
+                            onClick = onToggleFavourite,
+                            modifier = Modifier.padding(start = 8.dp)
                         )
                     }
                     if (article.url != null) {
@@ -278,7 +316,9 @@ fun NewsAppScrollablePreview() {
                 ArticleList(
                     storyIds = previewUiState.storyIds,
                     articles = previewUiState.articles,
-                    onFetchArticle = {}
+                    favouriteArticleIds = setOf(1L), // Preview with one favourite
+                    onFetchArticle = {},
+                    onToggleFavourite = {}
                 )
             }
         }
@@ -301,8 +341,68 @@ fun ArticleCardInListPreview() {
         Box(modifier = Modifier.padding(16.dp)) {
             ArticleCard(
                 article = previewArticle,
+                isFavourite = true,
+                onToggleFavourite = {},
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Animated Favorite Button")
+@Composable
+fun AnimatedFavoriteButtonPreview() {
+    HackerFeedTheme {
+        Surface(modifier = Modifier.padding(24.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = "Animated Favorite Button Demo",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AnimatedFavoriteButton(
+                            isFavourite = false,
+                            onClick = { }
+                        )
+                        Text(
+                            text = "Add to Favourites",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                    
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AnimatedFavoriteButton(
+                            isFavourite = true,
+                            onClick = { }
+                        )
+                        Text(
+                            text = "Remove from Favourites",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+                
+                Text(
+                    text = "Tap the buttons to see the bounce animation!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

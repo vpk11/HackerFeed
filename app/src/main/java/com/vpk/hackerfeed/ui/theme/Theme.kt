@@ -110,3 +110,16 @@ fun HackerFeedTheme(
         content = content
     )
 }
+
+/**
+ * Returns the appropriate card background color based on the current theme (dark/light).
+ * This helper function eliminates code duplication across different activities.
+ */
+@Composable
+fun getCardBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        GithubCardBackgroundDark
+    } else {
+        GithubCardBackgroundLight
+    }
+}

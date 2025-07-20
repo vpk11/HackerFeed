@@ -2,6 +2,8 @@ package com.vpk.hackerfeed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vpk.hackerfeed.repository.FavouritesRepository
+import com.vpk.hackerfeed.repository.NewsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,10 +14,14 @@ data class NewsUiState(
     val isLoading: Boolean = true,
     val storyIds: List<Long> = emptyList(),
     val articles: Map<Long, Article?> = emptyMap(),
+    val favouriteArticleIds: Set<Long> = emptySet(),
     val error: String? = null
 )
 
-class NewsViewModel : ViewModel() {
+class NewsViewModel(
+    private val newsRepository: NewsRepository,
+    private val favouritesRepository: FavouritesRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NewsUiState())
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
@@ -26,6 +32,15 @@ class NewsViewModel : ViewModel() {
 
     init {
         fetchTopStories()
+        observeFavourites()
+    }
+
+    private fun observeFavourites() {
+        viewModelScope.launch {
+            favouritesRepository.getAllFavourites().collect { favourites ->
+                _uiState.update { it.copy(favouriteArticleIds = favourites.map { fav -> fav.id }.toSet()) }
+            }
+        }
     }
 
     private fun fetchTopStories(isRefresh: Boolean = false) {
@@ -34,7 +49,7 @@ class NewsViewModel : ViewModel() {
                 _uiState.update { it.copy(isLoading = true, error = null) }
             }
             try {
-                val ids = RetrofitInstance.api.getTopStoryIds()
+                val ids = newsRepository.getTopStoryIds()
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -64,7 +79,7 @@ class NewsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val article = RetrofitInstance.api.getArticleDetails(id)
+                val article = newsRepository.getArticleDetails(id)
                 _uiState.update { currentState ->
                     val updatedArticles = currentState.articles.toMutableMap()
                     updatedArticles[id] = article
@@ -80,6 +95,12 @@ class NewsViewModel : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    fun toggleFavourite(article: Article) {
+        viewModelScope.launch {
+            favouritesRepository.toggleFavourite(article)
         }
     }
 }
