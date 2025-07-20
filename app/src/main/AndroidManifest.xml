@@ -28,13 +28,7 @@
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".PrivacyPolicyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TermsConditionsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DataProtectionActivity"
+            android:name=".LegalInfoActivity"
             android:exported="false" />
         <activity
             android:name=".NewsActivity"

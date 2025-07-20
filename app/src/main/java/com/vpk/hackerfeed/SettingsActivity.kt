@@ -110,7 +110,7 @@ fun SettingsScreen() {
                             description = stringResource(R.string.privacy_policy_description),
                             icon = Icons.Filled.Policy,
                             onClick = {
-                                val intent = Intent(localContext, PrivacyPolicyActivity::class.java)
+                                val intent = LegalInfoActivity.createPrivacyPolicyIntent(localContext)
                                 localContext.startActivity(intent)
                             }
                         ),
@@ -119,7 +119,7 @@ fun SettingsScreen() {
                             description = stringResource(R.string.terms_conditions_description),
                             icon = Icons.Filled.Description,
                             onClick = {
-                                val intent = Intent(localContext, TermsConditionsActivity::class.java)
+                                val intent = LegalInfoActivity.createTermsConditionsIntent(localContext)
                                 localContext.startActivity(intent)
                             }
                         ),
@@ -128,7 +128,7 @@ fun SettingsScreen() {
                             description = stringResource(R.string.data_protection_description),
                             icon = Icons.Filled.Security,
                             onClick = {
-                                val intent = Intent(localContext, DataProtectionActivity::class.java)
+                                val intent = LegalInfoActivity.createDataProtectionIntent(localContext)
                                 localContext.startActivity(intent)
                             }
                         )
