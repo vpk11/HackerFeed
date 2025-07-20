@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,24 +37,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.presentation.cache.CacheViewModel
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 
 class CacheManagementActivity : ComponentActivity() {
     
-    private lateinit var viewModel: CacheViewModel
+    private val viewModel: CacheViewModel by viewModels {
+        ViewModelFactory((application as HackerFeedApplication).container)
+    }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        val application = application as HackerFeedApplication
-        val factory = application.container.let { container ->
-            com.vpk.hackerfeed.di.ViewModelFactory(container)
-        }
-        
-        viewModel = factory.create(CacheViewModel::class.java)
         
         setContent {
             HackerFeedTheme {
