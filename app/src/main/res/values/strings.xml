@@ -57,4 +57,165 @@
     <string name="app_settings_section">App Settings</string>
     <string name="general_section">General</string>
     <string name="about_app_description">App information and developer details</string>
+    
+    <!-- GDPR Compliance -->
+    <string name="privacy_legal_section">Privacy &amp; Legal</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_description">How we handle your data and privacy</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="terms_conditions_description">Terms of use for this application</string>
+    <string name="data_protection">Data Protection</string>
+    <string name="data_protection_description">Your rights and data protection information</string>
+    
+    <!-- Privacy Policy Content -->
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_content">
+        <![CDATA[
+        <h2>Privacy Policy for HackerFeed</h2>
+        <p><strong>Last updated:</strong> July 20, 2025</p>
+        
+        <h3>1. Data Controller</h3>
+        <p>This application is developed by Vishnuprasad Kamalon. For any privacy-related questions, please contact: vishnuprasad.kamalon@gmail.com</p>
+        
+        <h3>2. Data We Collect</h3>
+        <p>HackerFeed is designed with privacy in mind. We don't collect any data:</p>
+        <ul>
+            <li><strong>No Personal Data:</strong> We do not collect any personal information such as names, email addresses, or phone numbers.</li>
+            <li><strong>No User Accounts:</strong> The app does not require registration or user accounts.</li>
+            <li><strong>Local Data Only:</strong> All your preferences and favorites are stored locally on your device.</li>
+        </ul>
+        
+        <h3>3. Data Usage</h3>
+        <ul>
+            <li><strong>News Content:</strong> We fetch news articles from Hacker News API for display purposes only.</li>
+            <li><strong>Favorites:</strong> Articles you mark as favorites are stored locally on your device.</li>
+            <li><strong>Cache:</strong> Article content is temporarily cached on your device to improve performance.</li>
+        </ul>
+        
+        <h3>4. Data Sharing</h3>
+        <p>We do not share any data with third parties. All data remains on your device.</p>
+        
+        <h3>5. Data Retention</h3>
+        <p>All data is stored locally on your device. You can clear this data at any time through the app\'s cache management feature or by uninstalling the app.</p>
+        
+        <h3>6. Your Rights</h3>
+        <p>Since all data is stored locally on your device, you have full control over your data:</p>
+        <ul>
+            <li>Access: You can view all your favorites and cached content</li>
+            <li>Deletion: You can clear cache and remove favorites at any time</li>
+            <li>Portability: Your data remains on your device</li>
+        </ul>
+        
+        <h3>7. Security</h3>
+        <p>Your data is protected by your device\'s security measures. We recommend keeping your device secure with appropriate lock screens and security updates.</p>
+        
+        <h3>8. Changes to Privacy Policy</h3>
+        <p>Any changes to this privacy policy will be reflected in app updates. The current version is always available in the app settings.</p>
+        ]]>
+    </string>
+    
+    <!-- Terms and Conditions Content -->
+    <string name="terms_conditions_title">Terms &amp; Conditions</string>
+    <string name="terms_conditions_content">
+        <![CDATA[
+        <h2>Terms and Conditions for HackerFeed</h2>
+        <p><strong>Last updated:</strong> July 20, 2025</p>
+        
+        <h3>1. Acceptance of Terms</h3>
+        <p>By using HackerFeed, you agree to these terms and conditions. If you do not agree, please do not use this application.</p>
+        
+        <h3>2. Description of Service</h3>
+        <p>HackerFeed is a news reader application that displays articles from Hacker News. It allows you to:</p>
+        <ul>
+            <li>Browse and read news articles</li>
+            <li>Save articles as favorites locally</li>
+            <li>Manage cached content</li>
+        </ul>
+        
+        <h3>3. User Responsibilities</h3>
+        <ul>
+            <li>Use the app in compliance with applicable laws</li>
+            <li>Respect intellectual property rights of article authors</li>
+            <li>Use the app for personal, non-commercial purposes</li>
+        </ul>
+        
+        <h3>4. Content</h3>
+        <p>All article content is sourced from Hacker News and is subject to their terms of service. We do not own or control the content of articles displayed.</p>
+        
+        <h3>5. Limitations</h3>
+        <ul>
+            <li>The app is provided "as is" without warranties</li>
+            <li>We are not responsible for the accuracy of third-party content</li>
+            <li>Service availability may vary based on internet connectivity</li>
+        </ul>
+        
+        <h3>6. Privacy</h3>
+        <p>Your privacy is important to us. Please review our Privacy Policy for information about how we handle data.</p>
+        
+        <h3>7. Modifications</h3>
+        <p>We reserve the right to modify these terms at any time. Updates will be reflected in new app versions.</p>
+        
+        <h3>8. Contact</h3>
+        <p>For questions about these terms, please contact: vishnuprasad.kamalon@gmail.com</p>
+        ]]>
+    </string>
+    
+    <!-- Data Protection Content -->
+    <string name="data_protection_title">Data Protection</string>
+    <string name="data_protection_content">
+        <![CDATA[
+        <h2>Data Protection Information</h2>
+        <p><strong>Your Rights Under GDPR</strong></p>
+        
+        <h3>1. Right to Information</h3>
+        <p>You have the right to know what data is processed. HackerFeed processes minimal data:</p>
+        <ul>
+            <li>Article favorites (stored locally)</li>
+            <li>Cache data (stored locally)</li>
+            <li>No personal identifiers</li>
+        </ul>
+        
+        <h3>2. Right of Access</h3>
+        <p>You can access all your data through the app interface:</p>
+        <ul>
+            <li>View your favorites in the Favorites section</li>
+            <li>Manage cache through Cache Management</li>
+        </ul>
+        
+        <h3>3. Right to Deletion</h3>
+        <p>You can delete your data at any time:</p>
+        <ul>
+            <li>Remove individual favorites</li>
+            <li>Clear all cache data</li>
+            <li>Uninstall the app to remove all data</li>
+        </ul>
+        
+        <h3>4. Right to Rectification</h3>
+        <p>Since we don\'t store personal data, rectification is not applicable. You can manage favorites as needed.</p>
+        
+        <h3>5. Right to Data Portability</h3>
+        <p>All data remains on your device and is not transmitted to external servers.</p>
+        
+        <h3>6. Right to Object</h3>
+        <p>You can stop using the app at any time. No ongoing data processing occurs without your active use.</p>
+        
+        <h3>7. Data Processing Legal Basis</h3>
+        <p>Data processing is based on:</p>
+        <ul>
+            <li>Legitimate interest: Providing news reading functionality</li>
+            <li>User consent: Saving favorites and cache for better experience</li>
+        </ul>
+        
+        <h3>8. Data Security</h3>
+        <p>Your data is protected by:</p>
+        <ul>
+            <li>Local storage only (no cloud transmission)</li>
+            <li>Device-level security measures</li>
+            <li>No collection of sensitive personal data</li>
+        </ul>
+        
+        <h3>9. Contact for Data Protection</h3>
+        <p>For any data protection concerns, contact: vishnuprasad.kamalon@gmail.com</p>
+        ]]>
+    </string>
 </resources>

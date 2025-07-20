@@ -14,6 +14,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -91,6 +94,41 @@ fun SettingsScreen() {
                             icon = Icons.Filled.Storage,
                             onClick = {
                                 val intent = Intent(localContext, CacheManagementActivity::class.java)
+                                localContext.startActivity(intent)
+                            }
+                        )
+                    )
+                )
+            }
+            
+            item {
+                SettingsSection(
+                    title = stringResource(R.string.privacy_legal_section),
+                    items = listOf(
+                        SettingsItem(
+                            title = stringResource(R.string.privacy_policy),
+                            description = stringResource(R.string.privacy_policy_description),
+                            icon = Icons.Filled.Policy,
+                            onClick = {
+                                val intent = Intent(localContext, PrivacyPolicyActivity::class.java)
+                                localContext.startActivity(intent)
+                            }
+                        ),
+                        SettingsItem(
+                            title = stringResource(R.string.terms_conditions),
+                            description = stringResource(R.string.terms_conditions_description),
+                            icon = Icons.Filled.Description,
+                            onClick = {
+                                val intent = Intent(localContext, TermsConditionsActivity::class.java)
+                                localContext.startActivity(intent)
+                            }
+                        ),
+                        SettingsItem(
+                            title = stringResource(R.string.data_protection),
+                            description = stringResource(R.string.data_protection_description),
+                            icon = Icons.Filled.Security,
+                            onClick = {
+                                val intent = Intent(localContext, DataProtectionActivity::class.java)
                                 localContext.startActivity(intent)
                             }
                         )
