@@ -7,6 +7,7 @@ import com.vpk.hackerfeed.domain.usecase.GetArticleDetailsUseCase
 import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.GetTopStoriesUseCase
 import com.vpk.hackerfeed.domain.usecase.ToggleFavouriteUseCase
+import com.vpk.hackerfeed.domain.usecase.ClearExpiredCacheUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,8 @@ class NewsViewModel(
     private val getTopStoriesUseCase: GetTopStoriesUseCase,
     private val getArticleDetailsUseCase: GetArticleDetailsUseCase,
     private val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase,
-    private val toggleFavouriteUseCase: ToggleFavouriteUseCase
+    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
+    private val clearExpiredCacheUseCase: ClearExpiredCacheUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NewsUiState())
@@ -38,6 +40,21 @@ class NewsViewModel(
     init {
         fetchTopStories()
         observeFavourites()
+        cleanupExpiredCache()
+    }
+    
+    /**
+     * Cleans up expired cache entries on ViewModel initialization.
+     * This helps maintain cache hygiene without impacting user experience.
+     */
+    private fun cleanupExpiredCache() {
+        viewModelScope.launch {
+            try {
+                clearExpiredCacheUseCase()
+            } catch (e: Exception) {
+                // Silently ignore cache cleanup errors to avoid disrupting the user experience
+            }
+        }
     }
 
     private fun observeFavourites() {

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -115,6 +116,15 @@ fun NewsApp(viewModel: NewsViewModel) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.favourites_title)
+                        )
+                    }
+                    IconButton(onClick = {
+                        val intent = Intent(localContext, CacheManagementActivity::class.java)
+                        localContext.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Storage,
+                            contentDescription = "Cache Management"
                         )
                     }
                     IconButton(onClick = {

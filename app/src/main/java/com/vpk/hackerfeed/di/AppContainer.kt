@@ -2,10 +2,13 @@ package com.vpk.hackerfeed.di
 
 import android.app.Application
 import com.vpk.hackerfeed.data.RetrofitInstance
+import com.vpk.hackerfeed.data.cache.CacheManager
 import com.vpk.hackerfeed.data.datasource.HackerNewsRemoteDataSource
 import com.vpk.hackerfeed.data.datasource.LocalFavouritesDataSource
+import com.vpk.hackerfeed.data.datasource.LocalNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RemoteNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RoomFavouritesDataSource
+import com.vpk.hackerfeed.data.datasource.RoomNewsDataSource
 import com.vpk.hackerfeed.data.repository.FavouritesRepositoryImpl
 import com.vpk.hackerfeed.data.repository.NewsRepositoryImpl
 import com.vpk.hackerfeed.database.AppDatabase
@@ -16,6 +19,8 @@ import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.GetTopStoriesUseCase
 import com.vpk.hackerfeed.domain.usecase.RemoveFromFavouritesUseCase
 import com.vpk.hackerfeed.domain.usecase.ToggleFavouriteUseCase
+import com.vpk.hackerfeed.domain.usecase.ClearCacheUseCase
+import com.vpk.hackerfeed.domain.usecase.ClearExpiredCacheUseCase
 
 /**
  * Manual dependency injection container for the application.
@@ -28,6 +33,8 @@ interface AppContainer {
     val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase
     val toggleFavouriteUseCase: ToggleFavouriteUseCase
     val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase
+    val clearCacheUseCase: ClearCacheUseCase
+    val clearExpiredCacheUseCase: ClearExpiredCacheUseCase
 }
 
 /**
@@ -47,13 +54,25 @@ class DefaultAppContainer(
         HackerNewsRemoteDataSource(RetrofitInstance.api)
     }
     
+    // Cache infrastructure
+    private val cacheManager: CacheManager by lazy {
+        CacheManager(
+            cachedArticleDao = database.cachedArticleDao(),
+            cachedTopStoriesDao = database.cachedTopStoriesDao()
+        )
+    }
+    
+    private val localNewsDataSource: LocalNewsDataSource by lazy {
+        RoomNewsDataSource(cacheManager)
+    }
+    
     private val localFavouritesDataSource: LocalFavouritesDataSource by lazy {
         RoomFavouritesDataSource(database.favouriteArticleDao())
     }
     
     // Repositories
     private val newsRepository: NewsRepository by lazy {
-        NewsRepositoryImpl(remoteNewsDataSource)
+        NewsRepositoryImpl(remoteNewsDataSource, localNewsDataSource)
     }
     
     private val favouritesRepository: FavouritesRepository by lazy {
@@ -79,5 +98,13 @@ class DefaultAppContainer(
     
     override val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase by lazy {
         RemoveFromFavouritesUseCase(favouritesRepository)
+    }
+    
+    override val clearCacheUseCase: ClearCacheUseCase by lazy {
+        ClearCacheUseCase(newsRepository as NewsRepositoryImpl)
+    }
+    
+    override val clearExpiredCacheUseCase: ClearExpiredCacheUseCase by lazy {
+        ClearExpiredCacheUseCase(newsRepository as NewsRepositoryImpl)
     }
 }
