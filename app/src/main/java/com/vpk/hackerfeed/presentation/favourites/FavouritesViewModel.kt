@@ -1,9 +1,12 @@
-package com.vpk.hackerfeed
+package com.vpk.hackerfeed.presentation.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vpk.hackerfeed.database.FavouriteArticle
-import com.vpk.hackerfeed.repository.FavouritesRepository
+import com.vpk.hackerfeed.R
+import com.vpk.hackerfeed.data.provider.StringResourceProvider
+import com.vpk.hackerfeed.domain.model.FavouriteArticle
+import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
+import com.vpk.hackerfeed.domain.usecase.RemoveFromFavouritesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +19,9 @@ data class FavouritesUiState(
 )
 
 class FavouritesViewModel(
-    private val favouritesRepository: FavouritesRepository
+    private val getFavouriteArticlesUseCase: GetFavouriteArticlesUseCase,
+    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase,
+    private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavouritesUiState())
@@ -29,7 +34,7 @@ class FavouritesViewModel(
     private fun loadFavourites() {
         viewModelScope.launch {
             try {
-                favouritesRepository.getAllFavourites().collect { favourites ->
+                getFavouriteArticlesUseCase().collect { favourites ->
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         favouriteArticles = favourites,
@@ -39,7 +44,7 @@ class FavouritesViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = "Failed to load favourites: ${e.message}"
+                    error = stringResourceProvider.getString(R.string.failed_to_load_favourites, e.message ?: "")
                 )
             }
         }
@@ -47,7 +52,16 @@ class FavouritesViewModel(
 
     fun removeFromFavourites(articleId: Long) {
         viewModelScope.launch {
-            favouritesRepository.removeFromFavourites(articleId)
+            removeFromFavouritesUseCase(articleId).fold(
+                onSuccess = {
+                    // Success - the UI state will be updated through the Flow
+                },
+                onFailure = { exception ->
+                    _uiState.value = _uiState.value.copy(
+                        error = stringResourceProvider.getString(R.string.failed_to_remove_favourite, exception.message ?: "")
+                    )
+                }
+            )
         }
     }
 }

@@ -19,6 +19,9 @@
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
+            android:name=".CacheManagementActivity"
+            android:exported="false" />
+        <activity
             android:name=".FavouritesActivity"
             android:exported="false" />
         <activity

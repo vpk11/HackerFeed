@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -52,6 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.di.ViewModelFactory
+import com.vpk.hackerfeed.domain.model.Article
+import com.vpk.hackerfeed.presentation.news.NewsViewModel
+import com.vpk.hackerfeed.presentation.news.NewsUiState
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
@@ -112,6 +116,15 @@ fun NewsApp(viewModel: NewsViewModel) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.favourites_title)
+                        )
+                    }
+                    IconButton(onClick = {
+                        val intent = Intent(localContext, CacheManagementActivity::class.java)
+                        localContext.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Storage,
+                            contentDescription = stringResource(R.string.cache_management_content_desc)
                         )
                     }
                     IconButton(onClick = {

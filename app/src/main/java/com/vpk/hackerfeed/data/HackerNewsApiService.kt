@@ -1,19 +1,10 @@
-package com.vpk.hackerfeed
+package com.vpk.hackerfeed.data
 
-import com.google.gson.annotations.SerializedName
+import com.vpk.hackerfeed.data.model.ApiArticle
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
-
-data class Article(
-    val id: Long,
-    @SerializedName("by") val author: String?,
-    val score: Int?,
-    val time: Long?,
-    val title: String?,
-    val url: String?
-)
 
 // Retrofit interface defining the API endpoints
 interface HackerNewsApiService {
@@ -21,7 +12,7 @@ interface HackerNewsApiService {
     suspend fun getTopStoryIds(): List<Long>
 
     @GET("v0/item/{id}.json")
-    suspend fun getArticleDetails(@Path("id") id: Long): Article
+    suspend fun getArticleDetails(@Path("id") id: Long): ApiArticle
 }
 
 object RetrofitInstance {

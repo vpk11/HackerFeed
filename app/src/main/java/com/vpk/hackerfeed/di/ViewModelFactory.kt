@@ -2,8 +2,9 @@ package com.vpk.hackerfeed.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.vpk.hackerfeed.FavouritesViewModel
-import com.vpk.hackerfeed.NewsViewModel
+import com.vpk.hackerfeed.presentation.favourites.FavouritesViewModel
+import com.vpk.hackerfeed.presentation.news.NewsViewModel
+import com.vpk.hackerfeed.presentation.cache.CacheViewModel
 
 /**
  * Custom ViewModelFactory that uses dependency injection container to provide dependencies.
@@ -17,12 +18,27 @@ class ViewModelFactory(
         return when (modelClass) {
             NewsViewModel::class.java -> {
                 NewsViewModel(
-                    container.newsRepository,
-                    container.favouritesRepository
+                    getTopStoriesUseCase = container.getTopStoriesUseCase,
+                    getArticleDetailsUseCase = container.getArticleDetailsUseCase,
+                    getFavouriteArticlesUseCase = container.getFavouriteArticlesUseCase,
+                    toggleFavouriteUseCase = container.toggleFavouriteUseCase,
+                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase,
+                    stringResourceProvider = container.stringResourceProvider
                 ) as T
             }
             FavouritesViewModel::class.java -> {
-                FavouritesViewModel(container.favouritesRepository) as T
+                FavouritesViewModel(
+                    getFavouriteArticlesUseCase = container.getFavouriteArticlesUseCase,
+                    removeFromFavouritesUseCase = container.removeFromFavouritesUseCase,
+                    stringResourceProvider = container.stringResourceProvider
+                ) as T
+            }
+            CacheViewModel::class.java -> {
+                CacheViewModel(
+                    clearCacheUseCase = container.clearCacheUseCase,
+                    clearExpiredCacheUseCase = container.clearExpiredCacheUseCase,
+                    stringResourceProvider = container.stringResourceProvider
+                ) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

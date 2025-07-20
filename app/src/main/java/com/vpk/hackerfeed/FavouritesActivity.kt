@@ -51,6 +51,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.database.FavouriteArticle
 import com.vpk.hackerfeed.di.ViewModelFactory
+import com.vpk.hackerfeed.domain.model.FavouriteArticle as DomainFavouriteArticle
+import com.vpk.hackerfeed.presentation.favourites.FavouritesViewModel
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
@@ -170,7 +172,7 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
 
 @Composable
 fun FavouritesList(
-    favourites: List<FavouriteArticle>,
+    favourites: List<DomainFavouriteArticle>,
     onRemoveFavourite: (Long) -> Unit
 ) {
     LazyColumn(
@@ -194,7 +196,7 @@ fun FavouritesList(
 
 @Composable
 fun FavouriteArticleCard(
-    article: FavouriteArticle,
+    article: DomainFavouriteArticle,
     onRemoveFavourite: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -278,21 +280,23 @@ fun FavouriteArticleCard(
 fun FavouritesScreenPreview() {
     HackerFeedTheme {
         val previewFavourites = listOf(
-            FavouriteArticle(
+            DomainFavouriteArticle(
                 id = 1,
                 title = "Amazing Kotlin Features You Should Know",
                 author = "dev.kotlin",
                 score = 256,
                 time = 0,
-                url = "https://example.com/1"
+                url = "https://example.com/1",
+                dateAdded = System.currentTimeMillis()
             ),
-            FavouriteArticle(
+            DomainFavouriteArticle(
                 id = 2,
                 title = "Building Android Apps with Jetpack Compose",
                 author = "android.dev",
                 score = 189,
                 time = 0,
-                url = "https://example.com/2"
+                url = "https://example.com/2",
+                dateAdded = System.currentTimeMillis()
             )
         )
         

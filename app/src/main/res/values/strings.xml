@@ -25,4 +25,29 @@
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="no_favourites">No favourites yet</string>
     <string name="no_favourites_description">Tap the heart icon on any article to add it to your favourites</string>
+    <string name="cache_management">Cache Management</string>
+    <string name="manage_app_cache">Manage App Cache</string>
+    <string name="cache_description">Clear cached data to free up storage space or refresh content. Clearing cache will require re-downloading content from the internet.</string>
+    <string name="processing">Processing…</string>
+    <string name="clear_expired_cache">Clear Expired Cache</string>
+    <string name="clear_expired_cache_description">Removes only outdated cache entries while keeping recent data</string>
+    <string name="clear_all_cache">Clear All Cache</string>
+    <string name="clear_all_cache_description">Removes all cached data. App will need to re-download content.</string>
+    <string name="cache_info">Cache helps improve app performance by storing frequently accessed content locally.</string>
+    <string name="cache_management_content_desc">Cache Management</string>
+    
+    <!-- Cache operation messages -->
+    <string name="cache_cleared_successfully">All cache cleared successfully</string>
+    <string name="expired_cache_cleared_successfully">Expired cache cleared successfully</string>
+    <string name="failed_to_clear_cache">Failed to clear cache: %1$s</string>
+    <string name="failed_to_clear_expired_cache">Failed to clear expired cache: %1$s</string>
+    
+    <!-- News loading error messages -->
+    <string name="failed_to_load_stories">Failed to load stories: %1$s</string>
+    <string name="failed_to_load_article">Failed to load article %1$d: %2$s</string>
+    <string name="failed_to_toggle_favourite">Failed to toggle favourite: %1$s</string>
+    
+    <!-- Favourites error messages -->
+    <string name="failed_to_load_favourites">Failed to load favourites: %1$s</string>
+    <string name="failed_to_remove_favourite">Failed to remove favourite: %1$s</string>
 </resources>
