@@ -125,7 +125,7 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
                 CircularProgressIndicator()
             } else if (uiState.error != null) {
                 Text(
-                    text = uiState.error!!,
+                    text = uiState.error ?: "",
                     modifier = Modifier.padding(16.dp)
                 )
             } else if (uiState.favouriteArticles.isEmpty()) {
