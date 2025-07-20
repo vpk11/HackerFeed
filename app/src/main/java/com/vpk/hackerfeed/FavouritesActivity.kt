@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -51,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.database.FavouriteArticle
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 
 class FavouritesActivity : ComponentActivity() {
     private val viewModel: FavouritesViewModel by viewModels()
@@ -244,16 +246,11 @@ fun FavouriteArticleCard(
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                    IconButton(
+                    AnimatedFavoriteButton(
+                        isFavourite = true, // Always true in favourites screen
                         onClick = onRemoveFavourite,
                         modifier = Modifier.padding(start = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = stringResource(R.string.remove_from_favourites),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    )
                 }
                 if (article.url != null) {
                     Button(

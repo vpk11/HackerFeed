@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 
 class MainActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels()
@@ -258,22 +260,11 @@ fun ArticleCard(
                                 color = MaterialTheme.colorScheme.secondary
                             )
                         }
-                        IconButton(
+                        AnimatedFavoriteButton(
+                            isFavourite = isFavourite,
                             onClick = onToggleFavourite,
                             modifier = Modifier.padding(start = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = if (isFavourite) 
-                                    stringResource(R.string.remove_from_favourites) 
-                                else 
-                                    stringResource(R.string.add_to_favourites),
-                                tint = if (isFavourite) 
-                                    MaterialTheme.colorScheme.primary 
-                                else 
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
-                        }
+                        )
                     }
                     if (article.url != null) {
                         Button(
@@ -354,6 +345,64 @@ fun ArticleCardInListPreview() {
                 onToggleFavourite = {},
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Animated Favorite Button")
+@Composable
+fun AnimatedFavoriteButtonPreview() {
+    HackerFeedTheme {
+        Surface(modifier = Modifier.padding(24.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Text(
+                    text = "Animated Favorite Button Demo",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AnimatedFavoriteButton(
+                            isFavourite = false,
+                            onClick = { }
+                        )
+                        Text(
+                            text = "Add to Favourites",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                    
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AnimatedFavoriteButton(
+                            isFavourite = true,
+                            onClick = { }
+                        )
+                        Text(
+                            text = "Remove from Favourites",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+                
+                Text(
+                    text = "Tap the buttons to see the bounce animation!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
