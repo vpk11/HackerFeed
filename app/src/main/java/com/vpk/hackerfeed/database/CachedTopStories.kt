@@ -11,6 +11,6 @@ import androidx.room.PrimaryKey
 data class CachedTopStories(
     @PrimaryKey
     val id: Int = 1, // Single row table
-    val storyIds: String, // JSON string of story IDs
+    val storyIds: List<Long>, // List of story IDs
     val cachedAt: Long = System.currentTimeMillis()
 )

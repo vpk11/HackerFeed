@@ -7,9 +7,6 @@ import com.vpk.hackerfeed.database.CachedTopStories
 import com.vpk.hackerfeed.domain.model.Article
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 
 /**
  * Cache manager for handling article and top stories caching.
@@ -20,7 +17,6 @@ class CacheManager(
     private val cachedTopStoriesDao: CachedTopStoriesDao
 ) {
     private val mutex = Mutex()
-    private val json = Json { ignoreUnknownKeys = true }
     
     // In-memory cache for frequently accessed data
     private var memoryTopStories: Pair<List<Long>, Long>? = null
@@ -43,7 +39,7 @@ class CacheManager(
         val cachedTopStories = cachedTopStoriesDao.getCachedTopStories()
         return@withLock if (cachedTopStories != null && 
                           CacheConfig.isTopStoriesCacheValid(cachedTopStories.cachedAt)) {
-            val stories = json.decodeFromString<List<Long>>(cachedTopStories.storyIds)
+            val stories = cachedTopStories.storyIds
             // Update memory cache
             memoryTopStories = Pair(stories, cachedTopStories.cachedAt)
             stories
@@ -57,12 +53,11 @@ class CacheManager(
      */
     suspend fun cacheTopStories(storyIds: List<Long>) = mutex.withLock {
         val currentTime = System.currentTimeMillis()
-        val storyIdsJson = json.encodeToString(storyIds)
         
         // Cache in database
         cachedTopStoriesDao.insertCachedTopStories(
             CachedTopStories(
-                storyIds = storyIdsJson,
+                storyIds = storyIds,
                 cachedAt = currentTime
             )
         )
