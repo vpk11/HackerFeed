@@ -26,7 +26,6 @@ updates:
     allow:
       - dependency-type: "direct"
       - dependency-type: "indirect"
-    versioning-strategy: increase
     # Group related updates together to reduce PR noise
     groups:
       android-core:
