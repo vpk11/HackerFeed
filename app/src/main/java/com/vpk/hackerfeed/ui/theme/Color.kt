@@ -2,27 +2,44 @@ package com.vpk.hackerfeed.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// --- GitHub Inspired Theme Colors ---
+// --- Solarized Light & Space Gray Theme Colors ---
 
-// Dark Theme Colors
-val GithubDarkCharcoal = Color(0xFF0D1117)  // Main background
-val GithubDarkGray = Color(0xFF161B22)      // Surface, Card backgrounds, AppBar
-val GithubMediumGray = Color(0xFF21262D)    // Borders, subtle dividers
-val GithubLightGray = Color(0xFFC9D1D9)     // Primary text on dark surfaces
-val GithubDimGray = Color(0xFF8B949E)       // Secondary text, icons
-val GithubCardBackgroundDark = Color(0xFF1C2128) // Example: A slightly different dark gray
+// Space Gray Dark Theme Colors
+val SpaceGrayBackground = Color(0xFF202124)     // Main background
+val SpaceGrayCard = Color(0xFF292A2D)          // Card backgrounds, surfaces
+val SpaceGrayText = Color(0xFFE0E0E0)          // Primary text
+val SpaceGraySecondaryText = Color(0xFFB0B0B0) // Secondary text
+val SpaceGrayPrimary = Color(0xFF00BFAE)       // Primary accent (teal)
+val SpaceGraySecondary = Color(0xFFFFB300)     // Secondary accent (amber)
+val SpaceGrayBorder = Color(0xFF3C3C3F)        // Borders and dividers
 
-val GithubBlue = Color(0xFF58A6FF)          // Primary accent (links, buttons)
-val GithubGreen = Color(0xFF3FB950)        // For positive actions (optional, e.g. success)
-val GithubPurple = Color(0xFFBC8EFF)       // For other accents (optional)
+// Solarized Light Theme Colors
+val SolarizedBackground = Color(0xFFFDF6E3)    // Main background
+val SolarizedCard = Color(0xFFEEE8D5)          // Card backgrounds, surfaces
+val SolarizedText = Color(0xFF657B83)          // Primary text (gray-blue)
+val SolarizedSecondaryText = Color(0xFF839496) // Secondary text
+val SolarizedPrimary = Color(0xFF268BD2)       // Primary accent (soft blue)
+val SolarizedSecondary = Color(0xFFB58900)     // Secondary accent (golden yellow)
+val SolarizedBorder = Color(0xFFD3D0C8)        // Borders and dividers
 
-// Light Theme Colors
-val GithubOffWhite = Color(0xFFF6F8FA)      // Main background
-val GithubLightSurfaceGray = Color(0xFFFFFFFF) // Surface, Card backgrounds
-val GithubLightBorderGray = Color(0xFFD0D7DE) // Borders
-val GithubDarkText = Color(0xFF24292F)      // Primary text on light surfaces
-val GithubSecondaryText = Color(0xFF57606A)  // Secondary text on light surfaces
-val GithubCardBackgroundLight = Color(0xFFFDFDFD)
+// Legacy GitHub colors (keeping for backward compatibility)
+val GithubDarkCharcoal = SpaceGrayBackground
+val GithubDarkGray = SpaceGrayCard
+val GithubMediumGray = SpaceGrayBorder
+val GithubLightGray = SpaceGrayText
+val GithubDimGray = SpaceGraySecondaryText
+val GithubCardBackgroundDark = SpaceGrayCard
+
+val GithubBlue = SpaceGrayPrimary
+val GithubGreen = Color(0xFF3FB950)        // Keep for success states
+val GithubPurple = Color(0xFFBC8EFF)       // Keep for other accents
+
+val GithubOffWhite = SolarizedBackground
+val GithubLightSurfaceGray = SolarizedCard
+val GithubLightBorderGray = SolarizedBorder
+val GithubDarkText = SolarizedText
+val GithubSecondaryText = SolarizedSecondaryText
+val GithubCardBackgroundLight = SolarizedCard
 
 // Original Material Defaults (can be kept for reference or other themes)
 val Purple80 = Color(0xFFD0BCFF)

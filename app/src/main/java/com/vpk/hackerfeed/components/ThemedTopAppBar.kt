@@ -8,7 +8,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import com.vpk.hackerfeed.ui.theme.GithubDarkGray
 
 /**
  * A themed TopAppBar that automatically adapts its colors based on the system theme.
@@ -35,7 +34,7 @@ fun ThemedTopAppBar(
         actions = actions,
         colors = colors ?: if (isDarkTheme) {
             TopAppBarDefaults.topAppBarColors(
-                containerColor = GithubDarkGray,
+                containerColor = MaterialTheme.colorScheme.surface,
                 titleContentColor = MaterialTheme.colorScheme.onSurface,
                 navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 actionIconContentColor = MaterialTheme.colorScheme.onSurface
