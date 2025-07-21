@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.vpk.hackerfeed.R
 import com.vpk.hackerfeed.domain.model.Article
-import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
+import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 /**
  * A reusable article card component that displays article information
@@ -49,14 +49,13 @@ fun ArticleCard(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val cardBackgroundColor = getCardBackgroundColor()
     val cardContentColor = MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = modifier.padding(horizontal = 16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = cardBackgroundColor,
+            containerColor = MaterialTheme.colorScheme.surface,
             contentColor = cardContentColor
         )
     ) {

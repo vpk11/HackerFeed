@@ -55,7 +55,7 @@ import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.presentation.news.NewsViewModel
 import com.vpk.hackerfeed.presentation.news.NewsUiState
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
+import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.components.ArticleListComponent

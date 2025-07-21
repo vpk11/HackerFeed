@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
+import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class SettingsActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -174,7 +174,7 @@ fun SettingsSection(
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = getCardBackgroundColor()
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
