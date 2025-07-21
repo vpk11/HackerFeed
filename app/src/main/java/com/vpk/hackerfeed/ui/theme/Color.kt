@@ -22,24 +22,9 @@ val SolarizedPrimary = Color(0xFF268BD2)       // Primary accent (soft blue)
 val SolarizedSecondary = Color(0xFFB58900)     // Secondary accent (golden yellow)
 val SolarizedBorder = Color(0xFFD3D0C8)        // Borders and dividers
 
-// Legacy GitHub colors (keeping for backward compatibility)
-val GithubDarkCharcoal = SpaceGrayBackground
-val GithubDarkGray = SpaceGrayCard
-val GithubMediumGray = SpaceGrayBorder
-val GithubLightGray = SpaceGrayText
-val GithubDimGray = SpaceGraySecondaryText
-val GithubCardBackgroundDark = SpaceGrayCard
-
-val GithubBlue = SpaceGrayPrimary
-val GithubGreen = Color(0xFF3FB950)        // Keep for success states
-val GithubPurple = Color(0xFFBC8EFF)       // Keep for other accents
-
-val GithubOffWhite = SolarizedBackground
-val GithubLightSurfaceGray = SolarizedCard
-val GithubLightBorderGray = SolarizedBorder
-val GithubDarkText = SolarizedText
-val GithubSecondaryText = SolarizedSecondaryText
-val GithubCardBackgroundLight = SolarizedCard
+// Accent colors for specific use cases
+val GithubGreen = Color(0xFF3FB950)        // Success states
+val GithubPurple = Color(0xFFBC8EFF)       // Additional accents
 
 // Original Material Defaults (can be kept for reference or other themes)
 val Purple80 = Color(0xFFD0BCFF)
