@@ -1,0 +1,20 @@
+# CODEOWNERS file for HackerFeed Android project
+# This file defines who will be automatically requested for review when
+# pull requests are opened for specific files or directories.
+
+# Global default owners for all files
+* @vpk11
+
+# Dependabot configuration and dependency files
+/.github/dependabot.yml @vpk11
+/gradle/ @vpk11
+build.gradle.kts @vpk11
+/app/build.gradle.kts @vpk11
+gradle.properties @vpk11
+/gradle/libs.versions.toml @vpk11
+
+# Android application source code
+/app/src/ @vpk11
+
+# Documentation
+README.md @vpk11

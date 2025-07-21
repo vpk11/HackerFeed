@@ -12,9 +12,7 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "UTC"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "vpk11"
+    open-pull-requests-limit: 5
     assignees:
       - "vpk11"
     commit-message:
@@ -24,16 +22,28 @@ updates:
     labels:
       - "dependencies"
       - "gradle"
+    # Security and version strategy configuration
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    versioning-strategy: increase
     # Group related updates together to reduce PR noise
     groups:
       android-core:
         patterns:
-          - "androidx.*"
+          - "androidx.core:core-ktx"
+          - "androidx.lifecycle:lifecycle-runtime-ktx"
+          - "androidx.appcompat:appcompat"
+          - "com.google.android.material:material"
           - "com.android.*"
       compose:
         patterns:
-          - "*compose*"
-          - "androidx.compose.*"
+          - "androidx.compose.ui:ui"
+          - "androidx.compose.material3:material3"
+          - "androidx.compose.ui:ui-tooling-preview"
+          - "androidx.activity:activity-compose"
+          - "androidx.lifecycle:lifecycle-viewmodel-compose"
+          - "androidx.navigation:navigation-compose"
       kotlin:
         patterns:
           - "org.jetbrains.kotlin*"
@@ -41,15 +51,17 @@ updates:
       networking:
         patterns:
           - "com.squareup.retrofit*"
+          - "com.squareup.okhttp3:*"
           - "com.google.code.gson*"
+          - "com.jakewharton.retrofit:*"
       room:
         patterns:
           - "androidx.room*"
       testing:
         patterns:
-          - "*junit*"
-          - "*espresso*"
-          - "*test*"
+          - "junit:junit"
+          - "androidx.test.ext:junit*"
+          - "androidx.test.espresso:espresso-core"
 
   # Enable version updates for GitHub Actions (if you add any workflows)
   - package-ecosystem: "github-actions"
@@ -60,8 +72,6 @@ updates:
       time: "09:00"
       timezone: "UTC"
     open-pull-requests-limit: 5
-    reviewers:
-      - "vpk11"
     assignees:
       - "vpk11"
     commit-message:
