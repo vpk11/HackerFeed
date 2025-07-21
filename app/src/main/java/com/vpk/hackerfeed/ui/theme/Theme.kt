@@ -58,7 +58,7 @@ private val SolarizedLightColorScheme = lightColorScheme(
     onPrimaryContainer = SolarizedText,
 
     secondary = SolarizedSecondary,
-    onSecondary = Color.White,
+    onSecondary = Color.Black,
     secondaryContainer = SolarizedSecondary.copy(alpha = 0.15f),
     onSecondaryContainer = SolarizedText,
 
@@ -110,17 +110,4 @@ fun HackerFeedTheme(
         typography = HackerFeedTypography, // Use the Typography from Type.kt
         content = content
     )
-}
-
-/**
- * Returns the appropriate card background color based on the current theme (dark/light).
- * This helper function eliminates code duplication across different activities.
- */
-@Composable
-fun getCardBackgroundColor(): Color {
-    return if (isSystemInDarkTheme()) {
-        SpaceGrayCard
-    } else {
-        SolarizedCard
-    }
 }

@@ -52,7 +52,7 @@ import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.domain.model.FavouriteArticle as DomainFavouriteArticle
 import com.vpk.hackerfeed.presentation.favourites.FavouritesViewModel
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.getCardBackgroundColor
+import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 import com.vpk.hackerfeed.components.AnimatedFavoriteButton
 import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.components.LoadingStateComponent
