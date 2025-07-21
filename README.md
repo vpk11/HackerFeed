@@ -2,7 +2,7 @@
 
 Hackernews at your finger tips\
 \
-[Click here](https://github.com/vpk11/Hackerfeed/releases/tag/1.1.0) to install latest release
+[Click here](https://github.com/vpk11/Hackerfeed/releases/latest) to install latest release
 
 ## Table of Contents
 
