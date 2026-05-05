@@ -25,8 +25,8 @@ fun ArticleListComponent(
     favouriteArticleIds: Set<Long>,
     onFetchArticle: (Long) -> Unit,
     onToggleFavourite: (Article) -> Unit,
-    showFavoriteButton: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showFavoriteButton: Boolean = true
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),

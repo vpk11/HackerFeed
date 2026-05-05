@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Cyberpunk / Neon palette -->
-    <color name="electric_cyan">#FF00FFFF</color>
-    <color name="hot_magenta">#FFFF00FF</color>
+    <!-- Cyberpunk / Neon palette — only XML-referenced colors -->
     <color name="cyberpunk_dark_bg">#FF0A0A0F</color>
-    <color name="cyberpunk_dark_surface">#FF12121A</color>
-    <color name="cyberpunk_light_bg">#FFE8E8EC</color>
-    <color name="neon_red">#FFFF003C</color>
-    <color name="neon_green">#FF00FF66</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 </resources>

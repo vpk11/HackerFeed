@@ -38,8 +38,8 @@ import com.vpk.hackerfeed.ui.theme.HotMagenta
  */
 @Composable
 fun LoadingStateComponent(
-    message: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: String? = null
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "neon_scan")
     val sweepAngle by infiniteTransition.animateFloat(
@@ -106,8 +106,8 @@ fun LoadingStateComponent(
 fun EmptyStateComponent(
     icon: ImageVector,
     title: String,
-    description: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    description: String? = null
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "holographic_shimmer")
     val shimmerOffset by infiniteTransition.animateFloat(

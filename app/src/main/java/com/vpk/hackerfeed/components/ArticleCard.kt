@@ -44,10 +44,10 @@ import com.vpk.hackerfeed.ui.theme.HotMagenta
 @Composable
 fun ArticleCard(
     article: Article?,
+    modifier: Modifier = Modifier,
     isFavourite: Boolean = false,
     onToggleFavourite: () -> Unit = {},
-    showFavoriteButton: Boolean = true,
-    modifier: Modifier = Modifier
+    showFavoriteButton: Boolean = true
 ) {
     val context = LocalContext.current
     val cardContentColor = MaterialTheme.colorScheme.onSurface

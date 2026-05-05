@@ -3,13 +3,9 @@
     <string name="read_full_article">Read Full Article</string>
     <string name="unknown">Unknown</string>
     <string name="no_title">No Title</string>
-    <string name="this_is_a_sample_hacker_news_article_title_for_preview">This Is a Sample Hacker News Article Title for Preview</string>
-    <string name="author">author</string>
-    <string name="https_google_com">https://google.com</string>
     <string name="points">%1$s points</string>
     <string name="no_articles_available">No articles available.</string>
     <string name="developed_by">Developed by Vishnuprasad Kamalon</string>
-    <string name="app_version_label">Version</string>
     <string name="connect_with_developer">Connect with developer:</string>
     <string name="portfolio_label">Portfolio</string>
     <string name="developer_portfolio_url">https://vpk11.github.io</string>
@@ -34,7 +30,7 @@
     <string name="clear_all_cache">Clear All Cache</string>
     <string name="clear_all_cache_description">Removes all cached data. App will need to re-download content.</string>
     <string name="cache_info">Cache helps improve app performance by storing frequently accessed content locally.</string>
-    <string name="cache_management_content_desc">Cache Management</string>
+
     
     <!-- Cache operation messages -->
     <string name="cache_cleared_successfully">All cache cleared successfully</string>
