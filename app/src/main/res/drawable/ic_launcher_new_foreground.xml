@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector
+    android:height="108dp"
+    android:width="108dp"
+    android:viewportHeight="108"
+    android:viewportWidth="108"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Outer neon glow ring (cyan) -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,24 A30,30 0 1,1 53.99,24"
+        android:strokeColor="#4000FFFF"
+        android:strokeWidth="3"/>
+
+    <!-- Inner neon ring (magenta) -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,28 A26,26 0 1,1 53.99,28"
+        android:strokeColor="#40FF00FF"
+        android:strokeWidth="1.5"/>
+
+    <!-- H letter - neon cyan -->
+    <path
+        android:fillColor="#00FFFF"
+        android:pathData="M35,40 L35,68 L39,68 L39,56 L49,56 L49,68 L53,68 L53,40 L49,40 L49,52 L39,52 L39,40 Z"/>
+
+    <!-- F letter - neon magenta -->
+    <path
+        android:fillColor="#FF00FF"
+        android:pathData="M57,40 L57,68 L61,68 L61,56 L71,56 L71,52 L61,52 L61,44 L73,44 L73,40 Z"/>
+
+    <!-- Small circuit dot accents -->
+    <path android:fillColor="#00FFFF" android:pathData="M30,54 A1.5,1.5 0 1,1 29.99,54"/>
+    <path android:fillColor="#FF00FF" android:pathData="M78,54 A1.5,1.5 0 1,1 77.99,54"/>
+    <path android:fillColor="#00FFFF" android:pathData="M54,78 A1.5,1.5 0 1,1 53.99,78"/>
+    <path android:fillColor="#FF00FF" android:pathData="M54,30 A1,1 0 1,1 53.99,30"/>
+</vector>

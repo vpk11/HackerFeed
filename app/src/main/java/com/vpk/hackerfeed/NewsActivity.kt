@@ -8,27 +8,15 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Storage
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,32 +25,31 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vpk.hackerfeed.components.AnimatedFavoriteButton
+import com.vpk.hackerfeed.components.ArticleCard
+import com.vpk.hackerfeed.components.ArticleListComponent
+import com.vpk.hackerfeed.components.EmptyStateComponent
+import com.vpk.hackerfeed.components.ErrorStateComponent
+import com.vpk.hackerfeed.components.LoadingStateComponent
+import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.domain.model.Article
-import com.vpk.hackerfeed.presentation.news.NewsViewModel
 import com.vpk.hackerfeed.presentation.news.NewsUiState
+import com.vpk.hackerfeed.presentation.news.NewsViewModel
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.components.AnimatedFavoriteButton
-import com.vpk.hackerfeed.components.ThemedTopAppBar
-import com.vpk.hackerfeed.components.ArticleListComponent
-import com.vpk.hackerfeed.components.LoadingStateComponent
-import com.vpk.hackerfeed.components.ErrorStateComponent
-import com.vpk.hackerfeed.components.EmptyStateComponent
-import com.vpk.hackerfeed.components.ArticleCard
 
 class NewsActivity : ComponentActivity() {
     private val viewModel: NewsViewModel by viewModels {
@@ -92,10 +79,14 @@ fun NewsApp(viewModel: NewsViewModel) {
     val localContext = LocalContext.current
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ThemedTopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name))
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
                 actions = {
                     IconButton(onClick = {
@@ -120,12 +111,22 @@ fun NewsApp(viewModel: NewsViewModel) {
             )
         }
     ) { innerPadding ->
+        val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             isRefreshing = isRefreshing,
-            onRefresh = { viewModel.refreshTopStories() }
+            onRefresh = { viewModel.refreshTopStories() },
+            state = pullToRefreshState,
+            indicator = {
+                PullToRefreshDefaults.Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = isRefreshing,
+                    state = pullToRefreshState,
+                    color = ElectricCyan
+                )
+            }
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -160,11 +161,11 @@ fun NewsApp(viewModel: NewsViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun NewsAppScrollablePreview() {
-    HackerFeedTheme {
+    HackerFeedTheme(darkTheme = true) {
         val previewUiState = NewsUiState(
             storyIds = listOf(1, 2, 3),
             articles = mapOf<Long, Article>(
-                1L to Article(1, "Author One", 100, 0, "First Long Article Title That Might Wrap Around Nicely", "http://example.com/1"),
+                1L to Article(1, "Author One", 100, 0, "First Long Article Title That Might Wrap", "http://example.com/1"),
                 2L to Article(2, "Author Two", 120, 0, "Second Article Also Interesting", "http://example.com/2")
             ),
             isLoading = false
@@ -172,7 +173,7 @@ fun NewsAppScrollablePreview() {
         Scaffold(
             topBar = {
                 ThemedTopAppBar(
-                    title = { Text("HackerFeed Scrollable") }
+                    title = { Text("HackerFeed", style = MaterialTheme.typography.titleLarge) }
                 )
             }
         ) { innerPadding ->
@@ -180,7 +181,7 @@ fun NewsAppScrollablePreview() {
                 ArticleListComponent(
                     storyIds = previewUiState.storyIds,
                     articles = previewUiState.articles,
-                    favouriteArticleIds = setOf(1L), // Preview with one favourite
+                    favouriteArticleIds = setOf(1L),
                     onFetchArticle = {},
                     onToggleFavourite = {}
                 )
@@ -188,7 +189,6 @@ fun NewsAppScrollablePreview() {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -198,17 +198,19 @@ fun ArticleCardInListPreview() {
         author = "dev.to",
         score = 256,
         time = 0,
-        title = "Top 10 Kotlin Coroutine Scopes You Must Know in 2024 for Better App Performance",
+        title = "Top 10 Kotlin Coroutine Scopes You Must Know",
         url = "https://dev.to/kotlin/coroutines"
     )
-    HackerFeedTheme {
-        Box(modifier = Modifier.padding(16.dp)) {
-            ArticleCard(
-                article = previewArticle,
-                isFavourite = true,
-                onToggleFavourite = {},
-                modifier = Modifier.fillMaxWidth()
-            )
+    HackerFeedTheme(darkTheme = true) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Box(modifier = Modifier.padding(16.dp)) {
+                ArticleCard(
+                    article = previewArticle,
+                    isFavourite = true,
+                    onToggleFavourite = {},
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -216,24 +218,26 @@ fun ArticleCardInListPreview() {
 @Preview(showBackground = true, name = "Animated Favorite Button")
 @Composable
 fun AnimatedFavoriteButtonPreview() {
-    HackerFeedTheme {
-        Surface(modifier = Modifier.padding(24.dp)) {
+    HackerFeedTheme(darkTheme = true) {
+        Surface(
+            modifier = Modifier.padding(24.dp),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
                     text = "Animated Favorite Button Demo",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = ElectricCyan
                 )
-                
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AnimatedFavoriteButton(
                             isFavourite = false,
                             onClick = { }
@@ -244,10 +248,8 @@ fun AnimatedFavoriteButtonPreview() {
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                    
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AnimatedFavoriteButton(
                             isFavourite = true,
                             onClick = { }
@@ -259,7 +261,7 @@ fun AnimatedFavoriteButtonPreview() {
                         )
                     }
                 }
-                
+
                 Text(
                     text = "Tap the buttons to see the bounce animation!",
                     style = MaterialTheme.typography.bodyMedium,

@@ -31,25 +31,25 @@ import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class LegalInfoActivity : ComponentActivity() {
-    
+
     companion object {
         private const val EXTRA_TITLE_RES_ID = "title_res_id"
         private const val EXTRA_CONTENT_RES_ID = "content_res_id"
-        
+
         fun createDataProtectionIntent(context: Context): Intent {
             return Intent(context, LegalInfoActivity::class.java).apply {
                 putExtra(EXTRA_TITLE_RES_ID, R.string.data_protection_title)
                 putExtra(EXTRA_CONTENT_RES_ID, R.string.data_protection_content)
             }
         }
-        
+
         fun createPrivacyPolicyIntent(context: Context): Intent {
             return Intent(context, LegalInfoActivity::class.java).apply {
                 putExtra(EXTRA_TITLE_RES_ID, R.string.privacy_policy_title)
                 putExtra(EXTRA_CONTENT_RES_ID, R.string.privacy_policy_content)
             }
         }
-        
+
         fun createTermsConditionsIntent(context: Context): Intent {
             return Intent(context, LegalInfoActivity::class.java).apply {
                 putExtra(EXTRA_TITLE_RES_ID, R.string.terms_conditions_title)
@@ -57,14 +57,14 @@ class LegalInfoActivity : ComponentActivity() {
             }
         }
     }
-    
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         val titleResId = intent.getIntExtra(EXTRA_TITLE_RES_ID, R.string.data_protection_title)
         val contentResId = intent.getIntExtra(EXTRA_CONTENT_RES_ID, R.string.data_protection_content)
-        
+
         setContent {
             HackerFeedTheme {
                 Surface(
@@ -91,10 +91,14 @@ fun LegalInfoScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ThemedTopAppBar(
                 title = {
-                    Text(text = stringResource(id = titleResId))
+                    Text(
+                        text = stringResource(id = titleResId),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -126,20 +130,18 @@ fun LegalInfoScreen(
 @Composable
 fun LegalContentText(content: String) {
     val lines = content.replace("\\n", "\n").trim().split("\n")
-    
+
     for (line in lines) {
         val trimmedLine = line.trim()
-        
+
         when {
             trimmedLine.isEmpty() -> {
-                // Add spacing between sections
                 Text(
                     text = "",
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
             trimmedLine.matches(Regex("^\\d+\\..*")) -> {
-                // Section headers (1. 2. 3. etc.)
                 Text(
                     text = trimmedLine,
                     style = MaterialTheme.typography.titleMedium,
@@ -149,7 +151,6 @@ fun LegalContentText(content: String) {
                 )
             }
             trimmedLine.startsWith("•") -> {
-                // Bullet points
                 Text(
                     text = trimmedLine,
                     style = MaterialTheme.typography.bodyMedium,
@@ -157,16 +158,15 @@ fun LegalContentText(content: String) {
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
-            trimmedLine.contains("Last updated:") || 
+            trimmedLine.contains("Last updated:") ||
             trimmedLine.endsWith("Privacy Policy") ||
             trimmedLine.endsWith("Terms and Conditions") ||
             trimmedLine.endsWith("Data Protection Information") ||
             trimmedLine.endsWith("Your Rights Under GDPR") -> {
-                // Main title or subtitle
                 Text(
                     text = trimmedLine,
-                    style = if (trimmedLine.contains("Last updated:")) 
-                        MaterialTheme.typography.bodyMedium 
+                    style = if (trimmedLine.contains("Last updated:"))
+                        MaterialTheme.typography.bodyMedium
                     else MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -174,7 +174,6 @@ fun LegalContentText(content: String) {
                 )
             }
             else -> {
-                // Regular paragraph text
                 Text(
                     text = trimmedLine,
                     style = MaterialTheme.typography.bodyMedium,
@@ -190,7 +189,7 @@ fun LegalContentText(content: String) {
 @Preview(showBackground = true)
 @Composable
 fun LegalInfoScreenPreview() {
-    HackerFeedTheme {
+    HackerFeedTheme(darkTheme = true) {
         LegalInfoScreen(
             titleResId = R.string.data_protection_title,
             contentResId = R.string.data_protection_content

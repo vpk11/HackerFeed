@@ -4,25 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Storage
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -34,7 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vpk.hackerfeed.components.ThemedTopAppBar
-import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
 
 class SettingsActivity : ComponentActivity() {
@@ -60,10 +63,14 @@ fun SettingsScreen() {
     val localContext = LocalContext.current
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ThemedTopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.settings_title))
+                    Text(
+                        text = stringResource(id = R.string.settings_title),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -100,7 +107,7 @@ fun SettingsScreen() {
                     )
                 )
             }
-            
+
             item {
                 SettingsSection(
                     title = stringResource(R.string.privacy_legal_section),
@@ -135,7 +142,7 @@ fun SettingsScreen() {
                     )
                 )
             }
-            
+
             item {
                 SettingsSection(
                     title = stringResource(R.string.general_section),
@@ -164,22 +171,26 @@ fun SettingsSection(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
+        // Section title in Orbitron + neon cyan (via theme typography + primary color)
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge, // Orbitron
+            color = MaterialTheme.colorScheme.primary,   // Electric Cyan
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        
+
+        // Neon-bordered card
         Card(
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, ElectricCyan.copy(alpha = 0.3f)),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column {
-                items.forEachIndexed { index, item ->
+                items.forEachIndexed { _, item ->
                     ListItem(
                         headlineContent = {
                             Text(
@@ -198,9 +209,12 @@ fun SettingsSection(
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = ElectricCyan // Neon glow tint on icons
                             )
                         },
+                        colors = ListItemDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0f)
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { item.onClick() }
@@ -221,7 +235,7 @@ data class SettingsItem(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    HackerFeedTheme {
+    HackerFeedTheme(darkTheme = true) {
         SettingsScreen()
     }
 }

@@ -1,0 +1,82 @@
+[tools]
+java = "temurin-21"
+yq = "4.53.2"
+android-sdk = "20.0"
+
+# --- Build tasks ---
+
+[tasks.build]
+description = "Build debug APK"
+run = "./gradlew assembleDebug"
+
+[tasks."build:release"]
+description = "Build release APK"
+run = "./gradlew assembleRelease"
+
+[tasks."build:bundle"]
+description = "Build release AAB (App Bundle)"
+run = "./gradlew bundleRelease"
+
+[tasks.clean]
+description = "Clean build outputs"
+run = "./gradlew clean"
+
+[tasks.rebuild]
+description = "Clean and build debug APK"
+depends = ["clean"]
+run = "./gradlew assembleDebug"
+
+# --- Test tasks ---
+
+[tasks.test]
+description = "Run unit tests"
+run = "./gradlew testDebugUnitTest"
+
+[tasks."test:release"]
+description = "Run unit tests against release build"
+run = "./gradlew testReleaseUnitTest"
+
+[tasks."test:connected"]
+description = "Run instrumentation tests on connected device/emulator"
+run = "./gradlew connectedDebugAndroidTest"
+
+# --- Lint & checks ---
+
+[tasks.lint]
+description = "Run Android lint checks"
+run = "./gradlew lintDebug"
+
+[tasks.check]
+description = "Run all checks (lint + tests)"
+run = "./gradlew check"
+
+# --- Install & run ---
+
+[tasks.install]
+description = "Install debug APK on connected device/emulator"
+run = "./gradlew installDebug"
+
+[tasks.uninstall]
+description = "Uninstall app from connected device/emulator"
+run = "./gradlew uninstallAll"
+
+[tasks.run]
+description = "Install and launch the app on connected device/emulator"
+run = """
+./gradlew installDebug
+adb shell am start -n com.vpk.hackerfeed/.NewsActivity
+"""
+
+# --- SDK management ---
+
+[tasks."sdk:licenses"]
+description = "Accept all Android SDK licenses"
+run = "yes | sdkmanager --licenses"
+
+[tasks."sdk:update"]
+description = "Update installed SDK packages"
+run = "sdkmanager --update"
+
+[tasks."sdk:list"]
+description = "List installed and available SDK packages"
+run = "sdkmanager --list"

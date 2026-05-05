@@ -1,6 +1,8 @@
 package com.vpk.hackerfeed.components
 
 import android.content.Intent
+import android.os.Build
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -21,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,17 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.vpk.hackerfeed.R
 import com.vpk.hackerfeed.domain.model.Article
-import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
+import com.vpk.hackerfeed.ui.theme.HotMagenta
 
 /**
- * A reusable article card component that displays article information
- * with consistent styling across the app.
- *
- * @param article The article to display, null shows loading state
- * @param isFavourite Whether the article is favorited
- * @param onToggleFavourite Callback for favorite button click
- * @param showFavoriteButton Whether to show the favorite button
- * @param modifier Modifier for the card
+ * A cyberpunk-styled article card with glassmorphism effect (API 31+)
+ * and neon border styling.
  */
 @Composable
 fun ArticleCard(
@@ -50,12 +51,41 @@ fun ArticleCard(
 ) {
     val context = LocalContext.current
     val cardContentColor = MaterialTheme.colorScheme.onSurface
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val cyanGlow = ElectricCyan.copy(alpha = 0.15f)
 
     Card(
-        modifier = modifier.padding(horizontal = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            // Neon glow shadow behind the card
+            .drawBehind {
+                drawRoundRect(
+                    color = cyanGlow,
+                    cornerRadius = CornerRadius(16.dp.toPx()),
+                    size = size.copy(
+                        width = size.width + 4.dp.toPx(),
+                        height = size.height + 4.dp.toPx()
+                    )
+                )
+            }
+            .then(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    Modifier.graphicsLayer {
+                        // Glassmorphism blur on API 31+
+                        renderEffect = android.graphics.RenderEffect
+                            .createBlurEffect(2f, 2f, android.graphics.Shader.TileMode.CLAMP)
+                            .let { null } // We skip actual blur on the card itself to keep text sharp
+                        alpha = 0.97f
+                    }
+                } else {
+                    Modifier
+                }
+            ),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, ElectricCyan.copy(alpha = 0.4f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = surfaceColor.copy(alpha = 0.7f),
             contentColor = cardContentColor
         )
     ) {
@@ -66,7 +96,10 @@ fun ArticleCard(
             contentAlignment = Alignment.Center
         ) {
             if (article == null) {
-                CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier.size(32.dp),
+                    color = ElectricCyan
+                )
             } else {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -112,9 +145,10 @@ fun ArticleCard(
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                containerColor = HotMagenta.copy(alpha = 0.85f),
+                                contentColor = MaterialTheme.colorScheme.onSecondary
                             ),
+                            shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             Text(stringResource(R.string.read_full_article))

@@ -8,15 +8,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
 
 /**
- * A themed TopAppBar that automatically adapts its colors based on the system theme.
- * This ensures consistent theming across all activities in the app.
- * 
- * @param title The title content for the TopAppBar
- * @param navigationIcon The navigation icon content (usually a back button)
- * @param actions Optional action buttons for the TopAppBar
- * @param colors Optional custom colors - if not provided, will use the app's standard theme colors
+ * A cyberpunk-themed TopAppBar with translucent background and neon bottom border.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,24 +27,36 @@ fun ThemedTopAppBar(
     colors: TopAppBarColors? = null
 ) {
     val isDarkTheme = isSystemInDarkTheme()
-    
+    val neonBorderColor = ElectricCyan.copy(alpha = 0.6f)
+
     TopAppBar(
         title = title,
         navigationIcon = navigationIcon,
         actions = actions,
+        modifier = Modifier
+            .drawBehind {
+                // Neon bottom border line
+                val strokeWidth = 2.dp.toPx()
+                drawLine(
+                    color = neonBorderColor,
+                    start = Offset(0f, size.height - strokeWidth / 2),
+                    end = Offset(size.width, size.height - strokeWidth / 2),
+                    strokeWidth = strokeWidth
+                )
+            },
         colors = colors ?: if (isDarkTheme) {
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                containerColor = Color.Black.copy(alpha = 0.85f),
+                titleContentColor = ElectricCyan,
+                navigationIconContentColor = ElectricCyan,
+                actionIconContentColor = ElectricCyan
             )
         } else {
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = Color(0xFFE8E8EC).copy(alpha = 0.9f),
+                titleContentColor = Color(0xFF00CCCC),
+                navigationIconContentColor = Color(0xFF00CCCC),
+                actionIconContentColor = Color(0xFF00CCCC)
             )
         }
     )

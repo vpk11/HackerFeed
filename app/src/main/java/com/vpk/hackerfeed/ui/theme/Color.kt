@@ -2,35 +2,35 @@ package com.vpk.hackerfeed.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// --- Solarized Light & Space Gray Theme Colors ---
+// --- Cyberpunk / Neon Theme Colors ---
 
-// Space Gray Dark Theme Colors
-val SpaceGrayBackground = Color(0xFF202124)     // Main background
-val SpaceGrayCard = Color(0xFF292A2D)          // Card backgrounds, surfaces
-val SpaceGrayText = Color(0xFFE0E0E0)          // Primary text
-val SpaceGraySecondaryText = Color(0xFFB0B0B0) // Secondary text
-val SpaceGrayPrimary = Color(0xFF00BFAE)       // Primary accent (teal)
-val SpaceGraySecondary = Color(0xFFFFB300)     // Secondary accent (amber)
-val SpaceGrayBorder = Color(0xFF3C3C3F)        // Borders and dividers
+// Primary Accents
+val ElectricCyan = Color(0xFF00FFFF)
+val HotMagenta = Color(0xFFFF00FF)
 
-// Solarized Light Theme Colors
-val SolarizedBackground = Color(0xFFFDF6E3)    // Main background
-val SolarizedCard = Color(0xFFEEE8D5)          // Card backgrounds, surfaces
-val SolarizedText = Color(0xFF657B83)          // Primary text (gray-blue)
-val SolarizedSecondaryText = Color(0xFF839496) // Secondary text
-val SolarizedPrimary = Color(0xFF268BD2)       // Primary accent (soft blue)
-val SolarizedSecondary = Color(0xFFB58900)     // Secondary accent (golden yellow)
-val SolarizedBorder = Color(0xFFD3D0C8)        // Borders and dividers
+// Dark Theme Palette
+val CyberpunkDarkBackground = Color(0xFF0A0A0F)       // Deep black/charcoal
+val CyberpunkDarkSurface = Color(0xFF12121A)           // Card backgrounds
+val CyberpunkDarkSurfaceVariant = Color(0xFF1A1A25)    // Elevated surfaces
+val CyberpunkDarkText = Color(0xFFE0E8F0)              // Primary text
+val CyberpunkDarkSecondaryText = Color(0xFFA0A8B8)     // Secondary text
+val CyberpunkDarkBorder = Color(0xFF00FFFF).copy(alpha = 0.3f) // Neon cyan border
+val CyberpunkDarkDivider = Color(0xFF1E1E2A)           // Subtle dividers
 
-// Accent colors for specific use cases
-val GithubGreen = Color(0xFF3FB950)        // Success states
-val GithubPurple = Color(0xFFBC8EFF)       // Additional accents
+// Light Theme Palette
+val CyberpunkLightBackground = Color(0xFFE8E8EC)       // Cool light gray
+val CyberpunkLightSurface = Color(0xFFF0F0F4)          // Card backgrounds
+val CyberpunkLightSurfaceVariant = Color(0xFFE0E0E8)   // Elevated surfaces
+val CyberpunkLightText = Color(0xFF0A0A1A)             // Primary text (dark)
+val CyberpunkLightSecondaryText = Color(0xFF404060)    // Secondary text
+val CyberpunkLightBorder = Color(0xFF00CCCC).copy(alpha = 0.5f) // Slightly muted cyan border
+val CyberpunkLightDivider = Color(0xFFD0D0D8)          // Subtle dividers
 
-// Original Material Defaults (can be kept for reference or other themes)
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Neon Error / Success / Accent
+val NeonRed = Color(0xFFFF003C)           // Error states
+val NeonGreen = Color(0xFF00FF66)         // Success states
+val NeonYellow = Color(0xFFFFFF00)        // Warning states
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Glow / Translucent helpers
+val CyanGlow = Color(0x4000FFFF)          // Soft cyan glow (25% alpha)
+val MagentaGlow = Color(0x40FF00FF)       // Soft magenta glow (25% alpha)

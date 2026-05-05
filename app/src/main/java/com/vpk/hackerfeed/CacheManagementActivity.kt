@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,22 +37,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.components.LoadingStateComponent
+import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.presentation.cache.CacheViewModel
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.HotMagenta
 
 class CacheManagementActivity : ComponentActivity() {
-    
+
     private val viewModel: CacheViewModel by viewModels {
         ViewModelFactory((application as HackerFeedApplication).container)
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         setContent {
             HackerFeedTheme {
                 CacheManagementScreen(
@@ -70,8 +74,7 @@ fun CacheManagementScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    
-    // Show snackbar for messages and errors
+
     LaunchedEffect(uiState.message, uiState.error) {
         uiState.message?.let { message ->
             snackbarHostState.showSnackbar(message)
@@ -82,11 +85,17 @@ fun CacheManagementScreen(
             viewModel.clearErrorOnly()
         }
     }
-    
+
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ThemedTopAppBar(
-                title = { Text(stringResource(R.string.cache_management)) },
+                title = {
+                    Text(
+                        stringResource(R.string.cache_management),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -107,46 +116,57 @@ fun CacheManagementScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            
+
             Text(
                 text = stringResource(R.string.manage_app_cache),
                 style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary
             )
-            
+
             Text(
                 text = stringResource(R.string.cache_description),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             if (uiState.isLoading) {
                 LoadingStateComponent(message = stringResource(R.string.processing))
             } else {
                 OutlinedButton(
                     onClick = { viewModel.clearExpiredCache() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, ElectricCyan.copy(alpha = 0.5f))
                 ) {
-                    Text(stringResource(R.string.clear_expired_cache))
+                    Text(
+                        stringResource(R.string.clear_expired_cache),
+                        color = ElectricCyan
+                    )
                 }
-                
+
                 Text(
                     text = stringResource(R.string.clear_expired_cache_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-                
+
                 Button(
                     onClick = { viewModel.clearAllCache() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = HotMagenta.copy(alpha = 0.85f),
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
                 ) {
                     Text(stringResource(R.string.clear_all_cache))
                 }
-                
+
                 Text(
                     text = stringResource(R.string.clear_all_cache_description),
                     style = MaterialTheme.typography.bodySmall,
@@ -154,9 +174,9 @@ fun CacheManagementScreen(
                     textAlign = TextAlign.Center
                 )
             }
-            
+
             Spacer(modifier = Modifier.weight(1f))
-            
+
             Text(
                 text = stringResource(R.string.cache_info),
                 style = MaterialTheme.typography.bodySmall,

@@ -7,8 +7,11 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,9 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,10 +43,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.vpk.hackerfeed.components.ThemedTopAppBar
+import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
+import com.vpk.hackerfeed.ui.theme.HotMagenta
+import com.vpk.hackerfeed.ui.theme.JetBrainsMono
+import com.vpk.hackerfeed.ui.theme.Orbitron
 
 class AboutActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -53,9 +62,15 @@ class AboutActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
+                        containerColor = MaterialTheme.colorScheme.background,
                         topBar = {
                             ThemedTopAppBar(
-                                title = { Text(stringResource(id = R.string.about_hackerfeed_title)) },
+                                title = {
+                                    Text(
+                                        stringResource(id = R.string.about_hackerfeed_title),
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                },
                                 navigationIcon = {
                                     IconButton(onClick = { finish() }) {
                                         Icon(
@@ -78,6 +93,7 @@ class AboutActivity : ComponentActivity() {
 @Composable
 fun AboutScreenContent(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val neonCyan = ElectricCyan
 
     Column(
         modifier = modifier
@@ -87,11 +103,22 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
+            // App name with neon glow effect
+            Box {
+                // Glow layer (cyan, slightly offset)
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.displaySmall,
+                    color = neonCyan.copy(alpha = 0.3f),
+                    modifier = Modifier.padding(start = 2.dp, top = 2.dp)
+                )
+                // Primary layer
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.displaySmall,
+                    color = neonCyan
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.developed_by),
@@ -100,19 +127,19 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
             )
             Spacer(modifier = Modifier.height(24.dp))
+            // Version text in JetBrains Mono
             Text(
                 text = "Version ${getAppVersionName(context)}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                style = MaterialTheme.typography.bodyMedium, // JetBrains Mono via typography
+                color = HotMagenta.copy(alpha = 0.7f)
             )
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = stringResource(R.string.connect_with_developer),
-                fontSize = 16.sp,
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = 12.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Row(
@@ -140,6 +167,9 @@ fun AboutScreenContent(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Neon-bordered pill/chip social link with icon glow.
+ */
 @Composable
 fun SocialLink(
     painter: Painter,
@@ -148,30 +178,43 @@ fun SocialLink(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Surface(
         modifier = modifier
             .clickable {
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 context.startActivity(intent)
-            }
-            .padding(8.dp)
+            },
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, ElectricCyan.copy(alpha = 0.4f)),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
     ) {
-        Image(
-            painter = painter,
-            contentDescription = text,
-            modifier = Modifier.size(32.dp)
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(top = 4.dp),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = text,
+                modifier = Modifier
+                    .size(28.dp)
+                    .drawBehind {
+                        // Neon glow behind icon
+                        drawCircle(
+                            color = ElectricCyan.copy(alpha = 0.2f),
+                            radius = size.minDimension * 0.8f
+                        )
+                    }
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(top = 6.dp),
+                color = ElectricCyan.copy(alpha = 0.9f)
+            )
+        }
     }
 }
 
-// Helper function to get app version (Updated for newer Android versions)
 fun getAppVersionName(context: Context): String {
     return try {
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -191,11 +234,16 @@ fun getAppVersionName(context: Context): String {
 @Composable
 fun AboutScreenDarkPreview() {
     HackerFeedTheme(darkTheme = true) {
-        Surface {
+        Surface(color = MaterialTheme.colorScheme.background) {
             Scaffold(
                 topBar = {
                     ThemedTopAppBar(
-                        title = { Text(stringResource(R.string.about_hackerfeed_title)) },
+                        title = {
+                            Text(
+                                stringResource(R.string.about_hackerfeed_title),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
                         navigationIcon = {
                             IconButton(onClick = { }) {
                                 Icon(
@@ -218,11 +266,16 @@ fun AboutScreenDarkPreview() {
 @Composable
 fun AboutScreenLightPreview() {
     HackerFeedTheme(darkTheme = false) {
-        Surface {
+        Surface(color = MaterialTheme.colorScheme.background) {
             Scaffold(
                 topBar = {
                     ThemedTopAppBar(
-                        title = { Text(stringResource(R.string.about_hackerfeed_title)) },
+                        title = {
+                            Text(
+                                stringResource(R.string.about_hackerfeed_title),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
                         navigationIcon = {
                             IconButton(onClick = { }) {
                                 Icon(

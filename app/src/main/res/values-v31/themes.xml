@@ -4,5 +4,9 @@
         <item name="android:windowBackground">@color/cyberpunk_dark_bg</item>
         <item name="android:statusBarColor">@color/cyberpunk_dark_bg</item>
         <item name="android:navigationBarColor">@color/cyberpunk_dark_bg</item>
+        <!-- Android 12+ Splash Screen API -->
+        <item name="android:windowSplashScreenBackground">@color/cyberpunk_dark_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_new_foreground</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/cyberpunk_dark_bg</item>
     </style>
 </resources>

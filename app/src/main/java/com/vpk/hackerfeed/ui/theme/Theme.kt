@@ -1,4 +1,4 @@
-package com.vpk.hackerfeed.ui.theme // Ensure this is your correct package
+package com.vpk.hackerfeed.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,88 +12,88 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.vpk.hackerfeed.ui.theme.Typography as HackerFeedTypography
 
-private val SpaceGrayDarkColorScheme = darkColorScheme(
-    primary = SpaceGrayPrimary,
-    onPrimary = Color.White,
-    primaryContainer = SpaceGrayPrimary.copy(alpha = 0.3f),
-    onPrimaryContainer = SpaceGrayText,
+private val CyberpunkDarkColorScheme = darkColorScheme(
+    primary = ElectricCyan,
+    onPrimary = Color.Black,
+    primaryContainer = ElectricCyan.copy(alpha = 0.15f),
+    onPrimaryContainer = CyberpunkDarkText,
 
-    secondary = SpaceGraySecondary,
+    secondary = HotMagenta,
     onSecondary = Color.Black,
-    secondaryContainer = SpaceGraySecondary.copy(alpha = 0.2f),
-    onSecondaryContainer = SpaceGrayText,
+    secondaryContainer = HotMagenta.copy(alpha = 0.20f),
+    onSecondaryContainer = CyberpunkDarkText,
 
-    tertiary = GithubGreen, // Keep green for success states
+    tertiary = NeonGreen,
     onTertiary = Color.Black,
-    tertiaryContainer = GithubGreen.copy(alpha = 0.2f),
-    onTertiaryContainer = SpaceGrayText,
+    tertiaryContainer = NeonGreen.copy(alpha = 0.15f),
+    onTertiaryContainer = CyberpunkDarkText,
 
-    error = Color(0xFFF85149),
+    error = NeonRed,
     onError = Color.White,
-    errorContainer = Color(0xFFDA3633).copy(alpha = 0.2f),
-    onErrorContainer = SpaceGrayText,
+    errorContainer = NeonRed.copy(alpha = 0.15f),
+    onErrorContainer = CyberpunkDarkText,
 
-    background = SpaceGrayBackground,
-    onBackground = SpaceGrayText,
+    background = CyberpunkDarkBackground,
+    onBackground = CyberpunkDarkText,
 
-    surface = SpaceGrayCard,
-    onSurface = SpaceGrayText,
+    surface = CyberpunkDarkSurface,
+    onSurface = CyberpunkDarkText,
 
-    surfaceVariant = SpaceGrayCard,
-    onSurfaceVariant = SpaceGraySecondaryText,
+    surfaceVariant = CyberpunkDarkSurfaceVariant,
+    onSurfaceVariant = CyberpunkDarkSecondaryText,
 
-    outline = SpaceGrayBorder,
-    inverseOnSurface = SpaceGrayBackground,
-    inverseSurface = SpaceGrayText,
-    inversePrimary = SpaceGrayPrimary.copy(alpha = 0.8f),
-    surfaceTint = SpaceGrayPrimary.copy(alpha = 0.1f),
-    outlineVariant = SpaceGrayBorder.copy(alpha = 0.5f),
-    scrim = Color.Black.copy(alpha = 0.6f)
+    outline = CyberpunkDarkBorder,
+    inverseOnSurface = CyberpunkDarkBackground,
+    inverseSurface = CyberpunkDarkText,
+    inversePrimary = ElectricCyan.copy(alpha = 0.8f),
+    surfaceTint = ElectricCyan.copy(alpha = 0.08f),
+    outlineVariant = ElectricCyan.copy(alpha = 0.15f),
+    scrim = Color.Black.copy(alpha = 0.7f)
 )
 
-private val SolarizedLightColorScheme = lightColorScheme(
-    primary = SolarizedPrimary,
+private val CyberpunkLightColorScheme = lightColorScheme(
+    primary = Color(0xFF00CCCC),           // Slightly darker cyan for readability on light bg
     onPrimary = Color.White,
-    primaryContainer = SolarizedPrimary.copy(alpha = 0.2f),
-    onPrimaryContainer = SolarizedText,
+    primaryContainer = ElectricCyan.copy(alpha = 0.15f),
+    onPrimaryContainer = CyberpunkLightText,
 
-    secondary = SolarizedSecondary,
-    onSecondary = Color.Black,
-    secondaryContainer = SolarizedSecondary.copy(alpha = 0.15f),
-    onSecondaryContainer = SolarizedText,
+    secondary = Color(0xFFCC00CC),         // Slightly darker magenta for readability
+    onSecondary = Color.White,
+    secondaryContainer = HotMagenta.copy(alpha = 0.15f),
+    onSecondaryContainer = CyberpunkLightText,
 
-    tertiary = GithubGreen,
-    onTertiary = Color.White,
-    tertiaryContainer = GithubGreen.copy(alpha = 0.15f),
-    onTertiaryContainer = SolarizedText,
+    tertiary = NeonGreen,
+    onTertiary = Color.Black,
+    tertiaryContainer = NeonGreen.copy(alpha = 0.1f),
+    onTertiaryContainer = CyberpunkLightText,
 
-    error = Color(0xFFCF222E),
+    error = NeonRed,
     onError = Color.White,
-    errorContainer = Color(0xFFCF222E).copy(alpha = 0.1f),
-    onErrorContainer = SolarizedText,
+    errorContainer = NeonRed.copy(alpha = 0.1f),
+    onErrorContainer = CyberpunkLightText,
 
-    background = SolarizedBackground,
-    onBackground = SolarizedText,
+    background = CyberpunkLightBackground,
+    onBackground = CyberpunkLightText,
 
-    surface = SolarizedCard,
-    onSurface = SolarizedText,
+    surface = CyberpunkLightSurface,
+    onSurface = CyberpunkLightText,
 
-    surfaceVariant = SolarizedCard,
-    onSurfaceVariant = SolarizedSecondaryText,
+    surfaceVariant = CyberpunkLightSurfaceVariant,
+    onSurfaceVariant = CyberpunkLightSecondaryText,
 
-    outline = SolarizedBorder,
-    inverseOnSurface = SolarizedCard,
-    inverseSurface = SolarizedText,
-    inversePrimary = SolarizedPrimary.copy(alpha = 0.9f),
-    surfaceTint = SolarizedPrimary.copy(alpha = 0.05f),
-    outlineVariant = SolarizedBorder.copy(alpha = 0.7f),
-    scrim = Color.Black.copy(alpha = 0.32f)
+    outline = CyberpunkLightBorder,
+    inverseOnSurface = CyberpunkLightSurface,
+    inverseSurface = CyberpunkLightText,
+    inversePrimary = ElectricCyan.copy(alpha = 0.9f),
+    surfaceTint = ElectricCyan.copy(alpha = 0.05f),
+    outlineVariant = ElectricCyan.copy(alpha = 0.2f),
+    scrim = Color.Black.copy(alpha = 0.4f)
 )
 
 @Composable
 fun HackerFeedTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Set to false to enforce custom Solarized/Space Gray theme
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -101,13 +101,13 @@ fun HackerFeedTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> SpaceGrayDarkColorScheme
-        else -> SolarizedLightColorScheme
+        darkTheme -> CyberpunkDarkColorScheme
+        else -> CyberpunkLightColorScheme
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = HackerFeedTypography, // Use the Typography from Type.kt
+        typography = HackerFeedTypography,
         content = content
     )
 }
