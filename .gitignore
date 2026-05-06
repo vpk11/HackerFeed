@@ -45,4 +45,5 @@ google-services.json
 /captures
 .externalNativeBuild
 .cxx
-.kotlin/
+.kotlin/release.keystore
+keystore.properties
