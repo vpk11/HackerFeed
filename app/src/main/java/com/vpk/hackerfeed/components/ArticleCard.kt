@@ -32,12 +32,14 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.vpk.hackerfeed.R
 import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.ui.theme.ElectricCyan
+import com.vpk.hackerfeed.ui.theme.JetBrainsMono
 import androidx.compose.foundation.isSystemInDarkTheme
 import com.vpk.hackerfeed.ui.theme.ElectricViolet
 import com.vpk.hackerfeed.ui.theme.ElectricVioletLight
@@ -127,7 +129,10 @@ fun ArticleCard(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = article.title ?: stringResource(R.string.no_title),
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontFamily = JetBrainsMono,
+                                    fontWeight = FontWeight.Bold
+                                ),
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
                             )
