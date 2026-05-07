@@ -1,5 +1,6 @@
 package com.vpk.hackerfeed
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,10 +28,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vpk.hackerfeed.components.ArticleCard
 import com.vpk.hackerfeed.components.EmptyStateComponent
 import com.vpk.hackerfeed.components.ErrorStateComponent
+import com.vpk.hackerfeed.components.ExpandedArticleOverlay
 import com.vpk.hackerfeed.components.LoadingStateComponent
 import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.di.ViewModelFactory
@@ -46,7 +56,6 @@ import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.domain.model.FavouriteArticle as DomainFavouriteArticle
 import com.vpk.hackerfeed.presentation.favourites.FavouritesViewModel
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.HotMagenta
 
 class FavouritesActivity : ComponentActivity() {
     private val viewModel: FavouritesViewModel by viewModels {
@@ -131,32 +140,82 @@ fun FavouritesList(
     favourites: List<DomainFavouriteArticle>,
     onRemoveFavourite: (Long) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 8.dp)
-    ) {
-        items(
-            items = favourites,
-            key = { favourite -> favourite.id }
-        ) { favourite ->
-            val article = Article(
-                id = favourite.id,
-                author = favourite.author,
-                score = favourite.score,
-                time = favourite.time,
-                title = favourite.title,
-                url = favourite.url
-            )
+    var expandedArticleId by remember { mutableStateOf<Long?>(null) }
+    val hapticFeedback = LocalHapticFeedback.current
 
-            ArticleCard(
-                article = article,
-                isFavourite = true,
-                onToggleFavourite = { onRemoveFavourite(favourite.id) },
-                showFavoriteButton = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
+    LaunchedEffect(favourites) {
+        if (expandedArticleId != null && favourites.none { it.id == expandedArticleId }) {
+            expandedArticleId = null
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (expandedArticleId != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Modifier.graphicsLayer {
+                            renderEffect = android.graphics.RenderEffect
+                                .createBlurEffect(
+                                    25f, 25f,
+                                    android.graphics.Shader.TileMode.CLAMP
+                                )
+                                .asComposeRenderEffect()
+                        }
+                    } else {
+                        Modifier
+                    }
+                ),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
+            items(
+                items = favourites,
+                key = { favourite -> favourite.id }
+            ) { favourite ->
+                val article = Article(
+                    id = favourite.id,
+                    author = favourite.author,
+                    score = favourite.score,
+                    time = favourite.time,
+                    title = favourite.title,
+                    url = favourite.url
+                )
+
+                ArticleCard(
+                    article = article,
+                    isFavourite = true,
+                    onToggleFavourite = { onRemoveFavourite(favourite.id) },
+                    onLongClick = {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        expandedArticleId = favourite.id
+                    },
+                    showFavoriteButton = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+            }
+        }
+
+        expandedArticleId?.let { id ->
+            val favourite = favourites.find { it.id == id }
+            if (favourite != null) {
+                val article = Article(
+                    id = favourite.id,
+                    author = favourite.author,
+                    score = favourite.score,
+                    time = favourite.time,
+                    title = favourite.title,
+                    url = favourite.url
+                )
+                ExpandedArticleOverlay(
+                    article = article,
+                    isFavourite = true,
+                    onToggleFavourite = { onRemoveFavourite(favourite.id) },
+                    onDismiss = { expandedArticleId = null }
+                )
+            }
         }
     }
 }

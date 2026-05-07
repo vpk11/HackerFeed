@@ -3,6 +3,8 @@ package com.vpk.hackerfeed.components
 import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -49,6 +52,7 @@ fun ArticleCard(
     modifier: Modifier = Modifier,
     isFavourite: Boolean = false,
     onToggleFavourite: () -> Unit = {},
+    onLongClick: () -> Unit = {},
     showFavoriteButton: Boolean = true
 ) {
     val context = LocalContext.current
@@ -56,10 +60,17 @@ fun ArticleCard(
     val surfaceColor = MaterialTheme.colorScheme.surface
     val cyanGlow = ElectricCyan.copy(alpha = 0.15f)
     val buttonColor = if (isSystemInDarkTheme()) ElectricViolet else ElectricVioletLight
+    val longClickInteractionSource = remember { MutableInteractionSource() }
 
     Card(
         modifier = modifier
             .padding(horizontal = 16.dp)
+            .combinedClickable(
+                onClick = { },
+                onLongClick = onLongClick,
+                indication = null,
+                interactionSource = longClickInteractionSource
+            )
             // Neon glow shadow behind the card
             .drawBehind {
                 drawRoundRect(
