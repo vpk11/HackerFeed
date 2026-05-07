@@ -10,9 +10,11 @@ import com.vpk.hackerfeed.domain.usecase.GetArticleDetailsUseCase
 import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.GetTopStoriesUseCase
 import com.vpk.hackerfeed.domain.usecase.ToggleFavouriteUseCase
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.helpers.FakeStringResourceProvider
 import com.vpk.hackerfeed.helpers.TestData
 import com.vpk.hackerfeed.presentation.news.NewsViewModel
+
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -69,7 +71,7 @@ class NewsViewModelIntegrationTest {
     @Test
     fun init_fetchesTopStories() {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
         val viewModel = createViewModel()
 
@@ -80,7 +82,7 @@ class NewsViewModelIntegrationTest {
     fun fetchArticleDetails_populatesArticlesMap() {
         val article = TestData.article()
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
         coEvery { localDataSource.getCachedArticle(article.id) } returns null
         coEvery { remoteDataSource.getArticleDetails(article.id) } returns article
 
@@ -94,7 +96,7 @@ class NewsViewModelIntegrationTest {
     @Test
     fun refreshTopStories_setsRefreshingAndReloads() {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
         val viewModel = createViewModel()
         viewModel.refreshTopStories()
@@ -105,7 +107,7 @@ class NewsViewModelIntegrationTest {
     @Test
     fun networkError_setsErrorState() {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } throws IOException("network down")
+        coEvery { remoteDataSource.getStoryIds(match { true }) } throws IOException("network down")
 
         val viewModel = createViewModel()
 
@@ -117,11 +119,60 @@ class NewsViewModelIntegrationTest {
         val favouriteIds = listOf(TestData.favouriteArticle(id = TestData.Ids.ARTICLE_1))
         every { localFavouritesDataSource.getAllFavourites() } returns flowOf(favouriteIds)
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
         val viewModel = createViewModel()
 
         assertTrue(viewModel.uiState.value.favouriteArticleIds.contains(TestData.Ids.ARTICLE_1))
+    }
+
+    @Test
+    fun setStoryType_switchesToNewAndRefetches() {
+        coEvery { localDataSource.getCachedTopStories() } returns null
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
+
+        val viewModel = createViewModel()
+        viewModel.setStoryType(StoryType.NEW)
+
+        assertEquals(StoryType.NEW, viewModel.uiState.value.storyType)
+        assertEquals(TestData.Ids.TOP_STORIES, viewModel.uiState.value.storyIds)
+    }
+
+    @Test
+    fun setStoryType_sameType_isNoOp() {
+        coEvery { localDataSource.getCachedTopStories() } returns TestData.Ids.TOP_STORIES
+
+        val viewModel = createViewModel()
+        val storyIdsBefore = viewModel.uiState.value.storyIds
+        viewModel.setStoryType(StoryType.TOP)
+
+        assertEquals(storyIdsBefore, viewModel.uiState.value.storyIds)
+    }
+
+    @Test
+    fun setStoryType_clearsArticlesMap() {
+        val article = TestData.article()
+        coEvery { localDataSource.getCachedTopStories() } returns null
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
+        coEvery { localDataSource.getCachedArticle(article.id) } returns null
+        coEvery { remoteDataSource.getArticleDetails(article.id) } returns article
+
+        val viewModel = createViewModel()
+        viewModel.fetchArticleDetails(article.id)
+        assertTrue(viewModel.uiState.value.articles.isNotEmpty())
+
+        viewModel.setStoryType(StoryType.BEST)
+
+        assertTrue(viewModel.uiState.value.articles.isEmpty())
+    }
+
+    @Test
+    fun defaultStoryType_isTop() {
+        coEvery { localDataSource.getCachedTopStories() } returns TestData.Ids.TOP_STORIES
+
+        val viewModel = createViewModel()
+
+        assertEquals(StoryType.TOP, viewModel.uiState.value.storyType)
     }
 
     @Test

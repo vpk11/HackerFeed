@@ -13,6 +13,7 @@ import com.vpk.hackerfeed.domain.usecase.ToggleFavouriteUseCase
 import com.vpk.hackerfeed.helpers.FakeStringResourceProvider
 import com.vpk.hackerfeed.helpers.TestData
 import com.vpk.hackerfeed.presentation.news.NewsViewModel
+
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -77,7 +78,7 @@ class RapidUserActionTest {
     @Test
     fun refreshWhileRefreshing_isNoOp() {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
         val viewModel = createViewModel()
         viewModel.refreshTopStories()
@@ -89,7 +90,7 @@ class RapidUserActionTest {
     @Test
     fun toggleFavouriteDuringRefresh_doesNotCorruptState() {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
         val article = TestData.article()
 
         val viewModel = createViewModel()

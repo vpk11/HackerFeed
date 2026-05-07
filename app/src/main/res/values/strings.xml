@@ -6,6 +6,9 @@
     <string name="points">%1$s points</string>
     <string name="article_author">by %1$s</string>
     <string name="no_articles_available">No articles available.</string>
+    <string name="story_type_top">Top</string>
+    <string name="story_type_new">New</string>
+    <string name="story_type_best">Best</string>
     <string name="developed_by">Developed by Vishnuprasad Kamalon</string>
     <string name="connect_with_developer">Connect with developer:</string>
     <string name="portfolio_label">Portfolio</string>

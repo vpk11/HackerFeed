@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
@@ -46,6 +50,7 @@ import com.vpk.hackerfeed.components.LoadingStateComponent
 import com.vpk.hackerfeed.components.ThemedTopAppBar
 import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.domain.model.Article
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.presentation.news.NewsUiState
 import com.vpk.hackerfeed.presentation.news.NewsViewModel
 import com.vpk.hackerfeed.ui.theme.ElectricCyan
@@ -111,11 +116,18 @@ fun NewsApp(viewModel: NewsViewModel) {
             )
         }
     ) { innerPadding ->
-        val pullToRefreshState = rememberPullToRefreshState()
-        PullToRefreshBox(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+        Column(modifier = Modifier.padding(innerPadding)) {
+            StoryTypeSelector(
+                selected = uiState.storyType,
+                onSelect = { viewModel.setStoryType(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            val pullToRefreshState = rememberPullToRefreshState()
+            PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
             isRefreshing = isRefreshing,
             onRefresh = { viewModel.refreshTopStories() },
             state = pullToRefreshState,
@@ -153,6 +165,52 @@ fun NewsApp(viewModel: NewsViewModel) {
                     )
                 }
             }
+        }
+        }
+    }
+}
+
+@Composable
+fun StoryTypeSelector(
+    selected: StoryType,
+    onSelect: (StoryType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val labels = mapOf(
+        StoryType.TOP to stringResource(R.string.story_type_top),
+        StoryType.NEW to stringResource(R.string.story_type_new),
+        StoryType.BEST to stringResource(R.string.story_type_best)
+    )
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        labels.forEach { (type, label) ->
+            val isSelected = type == selected
+            FilterChip(
+                selected = isSelected,
+                onClick = { onSelect(type) },
+                label = {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                },
+                shape = RoundedCornerShape(8.dp),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = isSelected,
+                    borderColor = ElectricCyan.copy(alpha = 0.4f),
+                    selectedBorderColor = ElectricCyan
+                ),
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                    selectedContainerColor = ElectricCyan.copy(alpha = 0.15f),
+                    labelColor = MaterialTheme.colorScheme.onSurface,
+                    selectedLabelColor = ElectricCyan
+                )
+            )
         }
     }
 }

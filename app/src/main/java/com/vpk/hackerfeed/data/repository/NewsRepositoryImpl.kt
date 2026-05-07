@@ -3,6 +3,7 @@ package com.vpk.hackerfeed.data.repository
 import com.vpk.hackerfeed.data.datasource.LocalNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RemoteNewsDataSource
 import com.vpk.hackerfeed.domain.model.Article
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.domain.repository.NewsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +23,7 @@ class NewsRepositoryImpl(
     private val localDataSource: LocalNewsDataSource
 ) : NewsRepository {
     
-    override suspend fun getTopStoryIds(forceRefresh: Boolean): Result<List<Long>> {
+    override suspend fun getStoryIds(storyType: StoryType, forceRefresh: Boolean): Result<List<Long>> {
         return withContext(Dispatchers.IO) {
             val cachedStories = if (!forceRefresh) localDataSource.getCachedTopStories() else null
             if (cachedStories != null) {
@@ -30,11 +31,10 @@ class NewsRepositoryImpl(
             }
 
             try {
-                val remoteStories = remoteDataSource.getTopStoryIds()
+                val remoteStories = remoteDataSource.getStoryIds(storyType)
                 localDataSource.cacheTopStories(remoteStories)
                 Result.success(remoteStories)
             } catch (e: Exception) {
-                // Fallback to any available cache, even if expired
                 val fallbackCache = try { localDataSource.getCachedTopStories() } catch (cacheEx: Exception) { null }
                 fallbackCache?.let { Result.success(it) } ?: Result.failure(e)
             }

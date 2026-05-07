@@ -2,7 +2,9 @@ package com.vpk.hackerfeed.data.repository
 
 import com.vpk.hackerfeed.data.datasource.LocalNewsDataSource
 import com.vpk.hackerfeed.data.datasource.RemoteNewsDataSource
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.helpers.TestData
+
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -30,19 +32,19 @@ class NewsRepositoryImplTest {
     fun getTopStoryIds_cacheHit_returnsLocal() = runTest {
         coEvery { localDataSource.getCachedTopStories() } returns TestData.Ids.TOP_STORIES
 
-        val result = repository.getTopStoryIds()
+        val result = repository.getStoryIds()
 
         assertTrue(result.isSuccess)
         assertEquals(TestData.Ids.TOP_STORIES, result.getOrNull())
-        coVerify(exactly = 0) { remoteDataSource.getTopStoryIds() }
+        coVerify(exactly = 0) { remoteDataSource.getStoryIds(match { true }) }
     }
 
     @Test
     fun getTopStoryIds_cacheMiss_fetchesRemoteAndCaches() = runTest {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
-        val result = repository.getTopStoryIds()
+        val result = repository.getStoryIds()
 
         assertTrue(result.isSuccess)
         assertEquals(TestData.Ids.TOP_STORIES, result.getOrNull())
@@ -51,9 +53,9 @@ class NewsRepositoryImplTest {
 
     @Test
     fun getTopStoryIds_forceRefresh_bypassesCache() = runTest {
-        coEvery { remoteDataSource.getTopStoryIds() } returns TestData.Ids.TOP_STORIES
+        coEvery { remoteDataSource.getStoryIds(match { true }) } returns TestData.Ids.TOP_STORIES
 
-        val result = repository.getTopStoryIds(forceRefresh = true)
+        val result = repository.getStoryIds(forceRefresh = true)
 
         assertTrue(result.isSuccess)
         coVerify(exactly = 0) { localDataSource.getCachedTopStories() }
@@ -62,9 +64,9 @@ class NewsRepositoryImplTest {
     @Test
     fun getTopStoryIds_networkError_fallsBackToExpiredCache() = runTest {
         coEvery { localDataSource.getCachedTopStories() } returns null andThen TestData.Ids.TOP_STORIES
-        coEvery { remoteDataSource.getTopStoryIds() } throws IOException("network down")
+        coEvery { remoteDataSource.getStoryIds(match { true }) } throws IOException("network down")
 
-        val result = repository.getTopStoryIds()
+        val result = repository.getStoryIds()
 
         assertTrue(result.isSuccess)
         assertEquals(TestData.Ids.TOP_STORIES, result.getOrNull())
@@ -73,9 +75,9 @@ class NewsRepositoryImplTest {
     @Test
     fun getTopStoryIds_networkErrorNoCacheFallback_returnsFailure() = runTest {
         coEvery { localDataSource.getCachedTopStories() } returns null
-        coEvery { remoteDataSource.getTopStoryIds() } throws IOException("network down")
+        coEvery { remoteDataSource.getStoryIds(match { true }) } throws IOException("network down")
 
-        val result = repository.getTopStoryIds()
+        val result = repository.getStoryIds()
 
         assertTrue(result.isFailure)
     }
@@ -101,6 +103,27 @@ class NewsRepositoryImplTest {
 
         assertTrue(result.isSuccess)
         coVerify { localDataSource.cacheArticle(article) }
+    }
+
+    @Test
+    fun getStoryIds_passesStoryTypeToRemote() = runTest {
+        coEvery { localDataSource.getCachedTopStories() } returns null
+        coEvery { remoteDataSource.getStoryIds(StoryType.NEW) } returns TestData.Ids.TOP_STORIES
+
+        repository.getStoryIds(storyType = StoryType.NEW)
+
+        coVerify { remoteDataSource.getStoryIds(StoryType.NEW) }
+    }
+
+    @Test
+    fun getStoryIds_bestType_passesToRemote() = runTest {
+        coEvery { localDataSource.getCachedTopStories() } returns null
+        coEvery { remoteDataSource.getStoryIds(StoryType.BEST) } returns TestData.Ids.TOP_STORIES
+
+        val result = repository.getStoryIds(storyType = StoryType.BEST)
+
+        assertTrue(result.isSuccess)
+        coVerify { remoteDataSource.getStoryIds(StoryType.BEST) }
     }
 
     @Test

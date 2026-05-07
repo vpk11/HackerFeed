@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.vpk.hackerfeed.R
 import com.vpk.hackerfeed.data.provider.StringResourceProvider
 import com.vpk.hackerfeed.domain.model.Article
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.domain.usecase.GetArticleDetailsUseCase
 import com.vpk.hackerfeed.domain.usecase.GetFavouriteArticlesUseCase
 import com.vpk.hackerfeed.domain.usecase.GetTopStoriesUseCase
@@ -24,6 +25,7 @@ data class NewsUiState(
     val storyIds: List<Long> = emptyList(),
     val articles: Map<Long, Article?> = emptyMap(),
     val favouriteArticleIds: Set<Long> = emptySet(),
+    val storyType: StoryType = StoryType.TOP,
     override val error: String? = null
 ) : BaseUiState
 
@@ -73,14 +75,22 @@ class NewsViewModel(
         }
     }
 
-    private fun fetchTopStories(isRefresh: Boolean = false) {
+    fun setStoryType(type: StoryType) {
+        if (type == uiStateManager.currentState.storyType) return
+        uiStateManager.updateState {
+            it.copy(storyType = type, storyIds = emptyList(), articles = emptyMap(), error = null)
+        }
+        fetchTopStories(isRefresh = false, forceRefresh = true)
+    }
+
+    private fun fetchTopStories(isRefresh: Boolean = false, forceRefresh: Boolean = isRefresh) {
         viewModelScope.launch {
             if (!isRefresh) {
                 uiStateManager.setLoading { it.copy(isLoading = true, error = null) }
             }
-            
+            val currentType = uiStateManager.currentState.storyType
             uiStateManager.handleResult(
-                result = getTopStoriesUseCase(forceRefresh = isRefresh),
+                result = getTopStoriesUseCase(storyType = currentType, forceRefresh = forceRefresh),
                 onSuccess = { ids ->
                     uiStateManager.currentState.copy(
                         isLoading = false,

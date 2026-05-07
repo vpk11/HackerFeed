@@ -11,6 +11,12 @@ interface HackerNewsApiService {
     @GET("v0/topstories.json")
     suspend fun getTopStoryIds(): List<Long>
 
+    @GET("v0/newstories.json")
+    suspend fun getNewStoryIds(): List<Long>
+
+    @GET("v0/beststories.json")
+    suspend fun getBestStoryIds(): List<Long>
+
     @GET("v0/item/{id}.json")
     suspend fun getArticleDetails(@Path("id") id: Long): ApiArticle
 }

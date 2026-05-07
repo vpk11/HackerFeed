@@ -162,6 +162,62 @@ class HackerNewsApiServiceTest {
     }
 
     @Test
+    fun getNewStoryIds_requestPath_isCorrect() = runTest {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(TestData.Http.STATUS_OK)
+                .setBody(JsonFixtureReader.read(TestData.Fixtures.TOP_STORIES))
+        )
+
+        api.getNewStoryIds()
+
+        val request = mockWebServer.takeRequest()
+        assertEquals("/v0/newstories.json", request.path)
+    }
+
+    @Test
+    fun getBestStoryIds_requestPath_isCorrect() = runTest {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(TestData.Http.STATUS_OK)
+                .setBody(JsonFixtureReader.read(TestData.Fixtures.TOP_STORIES))
+        )
+
+        api.getBestStoryIds()
+
+        val request = mockWebServer.takeRequest()
+        assertEquals("/v0/beststories.json", request.path)
+    }
+
+    @Test
+    fun getNewStoryIds_parsesJsonArray() = runTest {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(TestData.Http.STATUS_OK)
+                .setBody(JsonFixtureReader.read(TestData.Fixtures.TOP_STORIES))
+                .addHeader("Content-Type", TestData.Http.CONTENT_TYPE_JSON)
+        )
+
+        val ids = api.getNewStoryIds()
+
+        assertEquals(TestData.Ids.TOP_STORIES, ids)
+    }
+
+    @Test
+    fun getBestStoryIds_parsesJsonArray() = runTest {
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(TestData.Http.STATUS_OK)
+                .setBody(JsonFixtureReader.read(TestData.Fixtures.TOP_STORIES))
+                .addHeader("Content-Type", TestData.Http.CONTENT_TYPE_JSON)
+        )
+
+        val ids = api.getBestStoryIds()
+
+        assertEquals(TestData.Ids.TOP_STORIES, ids)
+    }
+
+    @Test
     fun getArticleDetails_requestPath_containsId() = runTest {
         mockWebServer.enqueue(
             MockResponse()

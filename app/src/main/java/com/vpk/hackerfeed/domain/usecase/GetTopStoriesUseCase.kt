@@ -1,5 +1,6 @@
 package com.vpk.hackerfeed.domain.usecase
 
+import com.vpk.hackerfeed.domain.model.StoryType
 import com.vpk.hackerfeed.domain.repository.NewsRepository
 
 /**
@@ -9,7 +10,10 @@ import com.vpk.hackerfeed.domain.repository.NewsRepository
 class GetTopStoriesUseCase(
     private val newsRepository: NewsRepository
 ) {
-    suspend operator fun invoke(forceRefresh: Boolean = false): Result<List<Long>> {
-        return newsRepository.getTopStoryIds(forceRefresh)
+    suspend operator fun invoke(
+        storyType: StoryType = StoryType.TOP,
+        forceRefresh: Boolean = false
+    ): Result<List<Long>> {
+        return newsRepository.getStoryIds(storyType, forceRefresh)
     }
 }
