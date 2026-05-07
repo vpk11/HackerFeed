@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.Color
 // Primary Accents
 val ElectricCyan = Color(0xFF00FFFF)
 val HotMagenta = Color(0xFFFF00FF)
+val ElectricViolet = Color(0xFF7C3AED)
+val ElectricVioletLight = Color(0xFF6D28D9)
 
 // Dark Theme Palette
 val CyberpunkDarkBackground = Color(0xFF0A0A0F)       // Deep black/charcoal
@@ -33,4 +35,4 @@ val NeonYellow = Color(0xFFFFFF00)        // Warning states
 
 // Glow / Translucent helpers
 val CyanGlow = Color(0x4000FFFF)          // Soft cyan glow (25% alpha)
-val MagentaGlow = Color(0x40FF00FF)       // Soft magenta glow (25% alpha)
+val VioletGlow = Color(0x407C3AED)        // Soft violet glow (25% alpha)

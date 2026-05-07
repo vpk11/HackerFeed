@@ -43,7 +43,9 @@ import com.vpk.hackerfeed.di.ViewModelFactory
 import com.vpk.hackerfeed.presentation.cache.CacheViewModel
 import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HackerFeedTheme
-import com.vpk.hackerfeed.ui.theme.HotMagenta
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.vpk.hackerfeed.ui.theme.ElectricViolet
+import com.vpk.hackerfeed.ui.theme.ElectricVioletLight
 
 class CacheManagementActivity : ComponentActivity() {
 
@@ -73,6 +75,7 @@ fun CacheManagementScreen(
     onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val buttonColor = if (isSystemInDarkTheme()) ElectricViolet else ElectricVioletLight
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.message, uiState.error) {
@@ -160,7 +163,7 @@ fun CacheManagementScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = HotMagenta.copy(alpha = 0.85f),
+                        containerColor = buttonColor.copy(alpha = 0.85f),
                         contentColor = MaterialTheme.colorScheme.onSecondary
                     )
                 ) {

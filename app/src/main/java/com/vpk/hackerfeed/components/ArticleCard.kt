@@ -35,7 +35,9 @@ import androidx.core.net.toUri
 import com.vpk.hackerfeed.R
 import com.vpk.hackerfeed.domain.model.Article
 import com.vpk.hackerfeed.ui.theme.ElectricCyan
-import com.vpk.hackerfeed.ui.theme.HotMagenta
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.vpk.hackerfeed.ui.theme.ElectricViolet
+import com.vpk.hackerfeed.ui.theme.ElectricVioletLight
 
 /**
  * A cyberpunk-styled article card with glassmorphism effect (API 31+)
@@ -53,6 +55,7 @@ fun ArticleCard(
     val cardContentColor = MaterialTheme.colorScheme.onSurface
     val surfaceColor = MaterialTheme.colorScheme.surface
     val cyanGlow = ElectricCyan.copy(alpha = 0.15f)
+    val buttonColor = if (isSystemInDarkTheme()) ElectricViolet else ElectricVioletLight
 
     Card(
         modifier = modifier
@@ -145,7 +148,7 @@ fun ArticleCard(
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = HotMagenta.copy(alpha = 0.85f),
+                                containerColor = buttonColor.copy(alpha = 0.85f),
                                 contentColor = MaterialTheme.colorScheme.onSecondary
                             ),
                             shape = RoundedCornerShape(8.dp),

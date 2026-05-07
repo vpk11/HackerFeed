@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.vpk.hackerfeed.ui.theme.ElectricCyan
 import com.vpk.hackerfeed.ui.theme.HotMagenta
+import com.vpk.hackerfeed.ui.theme.VioletGlow
 
 /**
  * Neon scanning ring loader — glowing cyan trail on a circular path.
@@ -142,7 +143,7 @@ fun EmptyStateComponent(
                         colors = listOf(
                             Color.Transparent,
                             ElectricCyan.copy(alpha = 0.3f),
-                            HotMagenta.copy(alpha = 0.2f),
+                            VioletGlow,
                             Color.Transparent
                         ),
                         start = Offset(size.width * shimmerOffset, 0f),
